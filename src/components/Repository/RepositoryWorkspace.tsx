@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Save, RefreshCw, Undo2, Plus, X } from 'lucide-react';
+import { Save, RefreshCw, Undo2, Plus, X, Home, ChevronDown, ChevronUp } from 'lucide-react';
 import { HapaxHardware } from './HapaxHardware';
 import { RepositoryDiagram } from './RepositoryDiagram';
+import { RepositoryHome } from './RepositoryHome';
+import { RoutingMap } from './RoutingMap';
 import { changes, isDirty, portLabel, request, routeWarnings, stateLabel,
   type Device, type Envelope, type Library, type Selection, type Setup, type Track } from './repository';
 import './repository.css';
@@ -39,35 +41,44 @@ function DefinitionDialog({ name, onClose }: { name: string; onClose: () => void
   </Dialog>;
 }
 
-function TrackTable({ setup, library, onChange, onDefinition }: { setup: Setup; library: Library; onChange: (tracks: Track[]) => void; onDefinition: (name: string) => void }) {
+function TrackList({ setup, library, focusedTrack, onFocusTrack, onChange, onDefinition }: {
+  setup: Setup; library: Library; focusedTrack: number; onFocusTrack: (number: number) => void;
+  onChange: (tracks: Track[]) => void; onDefinition: (name: string) => void;
+}) {
   const update = (index: number, patch: Partial<Track>) => onChange(setup.tracks.map((t, i) => i === index ? { ...t, ...patch } : t));
-  return <div className="repo-table-scroll"><table className="repo-tracks"><thead><tr>
-    <th>Pista</th><th>Nombre</th><th>Equipo</th><th>Salida</th><th>Canal</th><th>Definición</th><th><span className="sr-only">Acciones</span></th>
-  </tr></thead><tbody>{setup.tracks.map((t, index) => <tr key={t.number}>
-    <td>{t.number}</td>
-    <td><input aria-label={`Nombre pista ${t.number}`} value={t.name} maxLength={64} onChange={e => update(index, { name: e.target.value })} /></td>
-    <td><select aria-label={`Equipo pista ${t.number}`} value={t.device} onChange={e => update(index, { device: e.target.value })}>
+  return <section className="repo-track-list" aria-label="Pistas del setup"><p className="repo-muted">Abre una pista para editar su equipo, salida, canal y definición.</p>
+    {setup.tracks.map((t, index) => <article className="repo-track" key={t.number}>
+      <button className="repo-track-summary" aria-expanded={focusedTrack === t.number} aria-controls={`track-${t.number}`} onClick={() => onFocusTrack(focusedTrack === t.number ? 0 : t.number)}>
+        <span className="routing-track-number">{String(t.number).padStart(2, '0')}</span><strong>{t.name}</strong>
+        <span>{library.devices.find(d => d.id === t.device)?.title || t.device}</span><span>{portLabel(t.port)}{t.channel > 0 ? ` · Canal ${t.channel}` : ''}</span>
+        {focusedTrack === t.number ? <ChevronUp size={16} aria-hidden="true" /> : <ChevronDown size={16} aria-hidden="true" />}
+      </button>
+      <div id={`track-${t.number}`} hidden={focusedTrack !== t.number}>{focusedTrack === t.number && <div className="repo-track-fields">
+    <label>Nombre<input autoFocus aria-label={`Nombre pista ${t.number}`} value={t.name} maxLength={64} onChange={e => update(index, { name: e.target.value })} /></label>
+    <label>Equipo<select aria-label={`Equipo pista ${t.number}`} value={t.device} onChange={e => update(index, { device: e.target.value })}>
       {library.devices.filter(d => d.id !== 'hapax').map(d => <option key={d.id} value={d.id}>{d.title}</option>)}
-    </select></td>
-    <td><select aria-label={`Salida pista ${t.number}`} value={t.port} onChange={e => {
+    </select></label>
+    <label>Salida<select aria-label={`Salida pista ${t.number}`} value={t.port} onChange={e => {
       const port = e.target.value; update(index, { port, channel: port.startsWith('CV') || port.startsWith('G') ? 0 : t.channel || 1 });
-    }}>{library.ports.map(p => <option key={p} value={p}>{portLabel(p)}</option>)}</select></td>
-    <td>{t.port.startsWith('CV') || t.port.startsWith('G') ? <span className="repo-muted">—</span> :
-      <input type="number" aria-label={`Canal pista ${t.number}`} min={1} max={16} value={t.channel} onChange={e => update(index, { channel: Number(e.target.value) })} />}</td>
-    <td><div className="repo-definition-select"><select aria-label={`Definición pista ${t.number}`} value={t.definition} onChange={e => update(index, { definition: e.target.value })}>
+    }}>{library.ports.map(p => <option key={p} value={p}>{portLabel(p)}</option>)}</select></label>
+    <label>Canal{t.port.startsWith('CV') || t.port.startsWith('G') ? <span className="repo-muted">CV/Gate no usa canal MIDI</span> :
+      <input type="number" aria-label={`Canal pista ${t.number}`} min={1} max={16} value={t.channel} onChange={e => update(index, { channel: Number(e.target.value) })} />}</label>
+    <label className="repo-track-definition">Definición<div className="repo-definition-select"><select aria-label={`Definición pista ${t.number}`} value={t.definition} onChange={e => update(index, { definition: e.target.value })}>
       {library.definitions.map(d => <option key={d.name} value={d.name}>{d.name}</option>)}
     </select><button onClick={() => onDefinition(t.definition)} aria-label={`Ver definición pista ${t.number}`}>Ver</button></div>
-      <span className="repo-definition-meta">{(() => { const d = library.definitions.find(d => d.name === t.definition); return d ? `${d.type} · ${d.ccCount} CC · ${d.nrpnCount} NRPN` : ''; })()}</span></td>
-    <td><button className="repo-remove" aria-label={`Quitar pista ${t.number}`} onClick={() => onChange(setup.tracks.filter((_, i) => i !== index))}><X size={16} /></button></td>
-  </tr>)}</tbody></table>{!setup.tracks.length && <p className="repo-empty">Este setup aún no tiene pistas. Añade un equipo para empezar.</p>}</div>;
+      <span className="repo-definition-meta">{(() => { const d = library.definitions.find(d => d.name === t.definition); return d ? `${d.type} · ${d.ccCount} CC · ${d.nrpnCount} NRPN` : ''; })()}</span></label>
+    <button className="repo-remove repo-track-remove" aria-label={`Quitar pista ${t.number}`} onClick={() => onChange(setup.tracks.filter((_, i) => i !== index))}><X size={16} />Quitar pista</button>
+      </div>}</div>
+  </article>)}{!setup.tracks.length && <p className="repo-empty">Este setup aún no tiene pistas. Añade un equipo para empezar.</p>}</section>;
 }
 
-function Editor({ selection, library, onSaved, onDirty }: { selection: Selection; library: Library;
+function Editor({ selection, library, initialTrack = 0, onSaved, onDirty }: { selection: Selection; library: Library; initialTrack?: number;
   onSaved: (selection: Selection, record: Setup | Device) => void; onDirty: (dirty: boolean) => void }) {
   const [base, setBase] = useState<Envelope<Setup | Device> | null>(null);
   const [draft, setDraft] = useState<Setup | Device | null>(null);
   const [history, setHistory] = useState<(Setup | Device)[]>([]);
-  const [view, setView] = useState<'tracks' | 'diagram' | 'hardware'>('tracks');
+  const [view, setView] = useState<'overview' | 'tracks' | 'diagram' | 'hardware' | 'settings'>(initialTrack ? 'tracks' : 'overview');
+  const [focusedTrack, setFocusedTrack] = useState(initialTrack);
   const [hardwareView, setHardwareView] = useState<'rear' | 'top'>('rear');
   const [hardwareTrack, setHardwareTrack] = useState(0);
   const [focusedPort, setFocusedPort] = useState('');
@@ -124,7 +135,14 @@ function Editor({ selection, library, onSaved, onDirty }: { selection: Selection
     if (!number || !d || !def) return;
     const known = library.setups.flatMap(s => s.tracks).find(t => t.device === d.id);
     changeTracks([...setup.tracks, { number, name: `Pista ${number}`, device: d.id, definition: known?.definition || def.name, port: 'NULL', channel: 1 }]);
+    setFocusedTrack(number);
   };
+  const metadata = <div className="repo-metadata"><label>Nombre<input value={draft.title} maxLength={256} onChange={e => edit({ ...draft, title: e.target.value })} /></label>
+    {setup && <label>Clock<select value={setup.clock_source} onChange={e => edit({ ...setup, clock_source: e.target.value })}>
+      {[...new Set(['internal', 'external', setup.clock_source])].map(c => <option key={c} value={c}>{c === 'internal' ? 'Interno' : c === 'external' ? 'Externo' : c}</option>)}
+    </select></label>}
+    <div className="repo-record-state"><span>{stateLabel(draft.status)}</span>{setup && <span>{setup.physical_verified ? 'Verificación física registrada' : 'Sin verificación física registrada'}</span>}</div>
+  </div>;
   return <main className="repo-content">
     <header className="repo-toolbar"><div><span className="repo-muted">{selection.category === 'setups' ? 'Setup' : 'Equipo'}</span>
       <strong>{draft.title}</strong></div><div className="repo-toolbar-actions">
@@ -136,18 +154,15 @@ function Editor({ selection, library, onSaved, onDirty }: { selection: Selection
       <button className="repo-primary" disabled={!dirty || busy} onClick={() => void save()}><Save size={16} />Guardar en repo</button>
     </div></header>
     {error && <div role="alert" className="repo-error">{error}</div>}
-    <fieldset disabled={busy} className="repo-edit-area"><div className="repo-metadata"><label>Nombre<input value={draft.title} maxLength={256} onChange={e => edit({ ...draft, title: e.target.value })} /></label>
-      {setup && <label>Clock<select value={setup.clock_source} onChange={e => edit({ ...setup, clock_source: e.target.value })}>
-        {[...new Set(['internal', 'external', setup.clock_source])].map(c => <option key={c} value={c}>{c === 'internal' ? 'Interno' : c === 'external' ? 'Externo' : c}</option>)}
-      </select></label>}
-      <div className="repo-record-state"><span>{stateLabel(draft.status)}</span>{setup && <span>{setup.physical_verified ? 'Verificación física registrada' : 'Sin verificación física registrada'}</span>}</div>
-    </div>
+    <fieldset disabled={busy} className="repo-edit-area">{device && metadata}
     {setup && <>
-      <nav className="repo-tabs" aria-label="Vista del setup">{(['tracks', 'diagram', 'hardware'] as const).map(v => <button key={v} aria-pressed={view === v} onClick={() => setView(v)}>
-        {{ tracks: 'Pistas', diagram: 'Diagrama', hardware: 'Hapax' }[v]}</button>)}<span>{setup.tracks.length} / 16 pistas</span>
+      <nav className="repo-tabs" aria-label="Vista del setup">{(['overview', 'tracks', 'hardware', 'diagram', 'settings'] as const).map(v => <button key={v} aria-pressed={view === v} onClick={() => setView(v)}>
+        {{ overview: 'Conexiones', tracks: 'Pistas', diagram: 'Canvas libre', hardware: 'Panel Hapax', settings: 'Ajustes' }[v]}</button>)}<span>{setup.tracks.length} / 16 pistas</span>
         {view === 'tracks' && <button className="repo-add" disabled={setup.tracks.length >= 16 || busy} onClick={addTrack}><Plus size={16} />Añadir pista</button>}
       </nav>
-      {view === 'tracks' && <TrackTable setup={setup} library={library} onChange={changeTracks} onDefinition={setDefinition} />}
+      {view === 'settings' && metadata}
+      {view === 'overview' && <RoutingMap setup={setup} devices={library.devices} onEditTrack={number => { setFocusedTrack(number); setView('tracks'); }} />}
+      {view === 'tracks' && <TrackList setup={setup} library={library} focusedTrack={focusedTrack} onFocusTrack={setFocusedTrack} onChange={changeTracks} onDefinition={setDefinition} />}
       {view === 'diagram' && <RepositoryDiagram setup={setup} devices={library.devices} onLayout={layout => edit({ ...setup, studio_layout: layout })} />}
       {view === 'hardware' && <section className="repo-hardware">
         <div className="repo-hardware-toolbar"><div><button aria-pressed={hardwareView === 'rear'} onClick={() => setHardwareView('rear')}>Conexiones</button>
@@ -178,17 +193,25 @@ function Editor({ selection, library, onSaved, onDirty }: { selection: Selection
 export function RepositoryWorkspace() {
   const [library, setLibrary] = useState<Library | null>(null);
   const [error, setError] = useState('');
-  const [selection, setSelection] = useState<Selection>({ category: 'setups', id: 'studio' });
-  const [pending, setPending] = useState<Selection | null>(null);
+  const [selection, setSelection] = useState<Selection | null>(null);
+  const [initialTrack, setInitialTrack] = useState(0);
+  const [homeSetupId, setHomeSetupId] = useState('studio');
+  const [pending, setPending] = useState<{ selection: Selection | null; track: number } | null>(null);
   const [query, setQuery] = useState('');
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [equipmentOpen, setEquipmentOpen] = useState(false);
   const dirty = useRef(false);
   const onDirty = useCallback((value: boolean) => { dirty.current = value; }, []);
   useEffect(() => { let active = true; request<Library>('library').then(r => {
-    if (active) { setLibrary(r); if (!r.setups.some(s => s.id === 'studio') && r.setups[0]) setSelection({ category: 'setups', id: r.setups[0].id }); }
+    if (active) setLibrary(r);
   }).catch(e => { if (active) setError(e.message); }); return () => { active = false; }; }, []);
-  const select = (next: Selection) => {
-    if (next.category === selection.category && next.id === selection.id) return;
-    if (dirty.current) setPending(next); else setSelection(next);
+  const select = (next: Selection | null, track = 0) => {
+    if (next?.category === selection?.category && next?.id === selection?.id) return;
+    if (dirty.current) setPending({ selection: next, track }); else {
+      setInitialTrack(track); setSelection(next); setLibraryOpen(false);
+      if (next?.category === 'devices') setEquipmentOpen(true);
+      if (next?.category === 'setups') setHomeSetupId(next.id);
+    }
   };
   const onSaved = useCallback((s: Selection, record: Setup | Device) => setLibrary(old => old ? { ...old,
     devices: s.category === 'devices' ? old.devices.map(d => d.id === s.id ? record as Device : d) : old.devices,
@@ -197,17 +220,25 @@ export function RepositoryWorkspace() {
     <p role={error ? 'alert' : 'status'}>{error || 'Abriendo la biblioteca del repo…'}</p>
     {error && <><button onClick={() => window.location.reload()}>Reintentar</button><a href="/standalone">Abrir editor independiente</a></>}
   </main></div>;
-  return <div className="repo-workspace"><aside className="repo-sidebar"><div className="repo-brand"><img src="/oconfig.svg" width="32" height="32" alt="" /><h1>Hapax Oconfig</h1></div><p>O de Ordenador</p>
+  return <div className="repo-workspace"><aside className={`repo-sidebar${libraryOpen ? ' library-open' : ''}`}><div className="repo-brand"><img src="/oconfig.svg" width="32" height="32" alt="" /><h1>Hapax Oconfig</h1></div>
+    <button className="repo-mobile-library" aria-expanded={libraryOpen} aria-controls="repo-library" onClick={() => setLibraryOpen(!libraryOpen)}>Biblioteca</button>
     <input type="search" aria-label="Buscar en biblioteca" placeholder="Buscar equipo o setup" value={query} onChange={e => setQuery(e.target.value)} />
-    <nav aria-label="Biblioteca">{(['setups', 'devices'] as const).map(category => <section key={category}><h2>{category === 'setups' ? 'Setups' : 'Equipos'}</h2>
+    <nav id="repo-library" aria-label="Biblioteca"><button className="repo-home-link" aria-current={!selection ? 'page' : undefined} onClick={() => select(null)}><Home size={18} aria-hidden="true" />Inicio</button>
+      {(['setups', 'devices'] as const).map(category => <section key={category}><h2>{category === 'setups' ? 'Setups' : <button className="repo-section-toggle" aria-expanded={equipmentOpen || !!query} aria-controls="repo-devices" onClick={() => setEquipmentOpen(!equipmentOpen)}>Equipos<span>{library.devices.length}</span><ChevronDown size={16} aria-hidden="true" /></button>}</h2>
+      <div id={`repo-${category}`} hidden={category === 'devices' && !equipmentOpen && !query}>
       {library[category].filter(item => `${item.title} ${item.id}`.toLowerCase().includes(query.toLowerCase())).map(item => <button key={item.id}
-        aria-current={selection.category === category && selection.id === item.id ? 'page' : undefined} onClick={() => select({ category, id: item.id })}>
+        aria-current={selection?.category === category && selection.id === item.id ? 'page' : undefined} onClick={() => select({ category, id: item.id })}>
         <span>{item.title}</span><small>{category === 'setups' ? `${(item as Setup).tracks.length} pistas` : item.id}</small>
-      </button>)}</section>)}</nav><a className="repo-standalone-link" href="/standalone" onClick={e => { if (dirty.current && !window.confirm('Hay cambios sin guardar. ¿Salir sin guardarlos?')) e.preventDefault(); }}>Editor independiente</a>
-  </aside><Editor key={`${selection.category}:${selection.id}`} selection={selection} library={library} onSaved={onSaved} onDirty={onDirty} />
+      </button>)}</div></section>)}</nav><a className="repo-standalone-link" href="/standalone" onClick={e => { if (dirty.current && !window.confirm('Hay cambios sin guardar. ¿Salir sin guardarlos?')) e.preventDefault(); }}>Editor independiente</a>
+  </aside>{selection ? <Editor key={`${selection.category}:${selection.id}`} selection={selection} library={library} initialTrack={initialTrack} onSaved={onSaved} onDirty={onDirty} /> : <RepositoryHome library={library} setupId={homeSetupId} onSetupChange={setHomeSetupId} onOpen={select} />}
     {pending && <Dialog title="Cambios sin guardar" onClose={() => setPending(null)}>
       <h2 id="unsaved-title">Cambios sin guardar</h2><p>Guarda la ficha actual para conservar los cambios antes de abrir otra.</p>
-      <div><button autoFocus onClick={() => setPending(null)}>Seguir editando</button><button onClick={() => { dirty.current = false; setSelection(pending); setPending(null); }}>Descartar y cambiar</button></div>
+      <div><button autoFocus onClick={() => setPending(null)}>Seguir editando</button><button onClick={() => {
+        dirty.current = false; setSelection(pending.selection); setInitialTrack(pending.track); setLibraryOpen(false);
+        if (pending.selection?.category === 'devices') setEquipmentOpen(true);
+        if (pending.selection?.category === 'setups') setHomeSetupId(pending.selection.id);
+        setPending(null);
+      }}>Descartar y cambiar</button></div>
     </Dialog>}
   </div>;
 }

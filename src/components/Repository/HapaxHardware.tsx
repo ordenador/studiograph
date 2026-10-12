@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 type HapaxHardwareProps = {
+  compact?: boolean;
   view?: 'rear' | 'top';
   activePorts?: string[];
   onPortClick?: (port: string) => void;
@@ -62,7 +63,7 @@ function ConnectorShape({ kind, color }: { kind: Connector['kind']; color: strin
 }
 
 /** Original vector reference of Hapax. Active means configured in the setup, not live MIDI. */
-export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick }: HapaxHardwareProps) {
+export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, compact = false }: HapaxHardwareProps) {
   const id = React.useId();
   const [focusedPort, setFocusedPort] = useState<string | null>(null);
   const titleId = `${id}-title`;
@@ -74,7 +75,7 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick }: 
       <text x={x + width / 2} y={y + 16} textAnchor="middle" fill="#f4f4f5" fontSize="8">{label}</text>
     </g>;
     return <div style={{ overflowX: 'auto' }}>
-      <svg viewBox="0 0 1000 585" fontFamily="system-ui, sans-serif" style={{ display: 'block', width: '100%', minWidth: 560 }} role="img" aria-labelledby={`${titleId} ${descriptionId}`}>
+      <svg viewBox="0 0 1000 585" fontFamily="system-ui, sans-serif" style={{ display: 'block', width: '100%', minWidth: compact ? 0 : 560 }} role="img" aria-labelledby={`${titleId} ${descriptionId}`}>
         <title id={titleId}>Hapax · vista superior de referencia</title>
         <desc id={descriptionId}>Panel con dos pantallas, ocho encoders de parámetros y un encoder de menú, dieciséis botones de pista y matriz de ciento veintiocho pads. Sin notas ni actividad de reproducción representadas.</desc>
         <rect x="18" y="12" width="964" height="555" rx="8" fill="#27272a" stroke="#71717a" />
@@ -103,7 +104,7 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick }: 
           ['live', 'step'], ['pattern', 'autom'], ['settings', 'effects'], ['fill', 'bpm'], ['snapshot', 'undo'], ['−', '+'],
         ].flatMap((labels, row) => labels.map((label, column) => button(859 + column * 51, 218 + row * 41, label, '#111113', 38)))}
         <path d="M861 470H876L900 490L925 470H940V483L915 501L940 520V533H925L900 512L876 533H861V520L885 501L861 483Z" fill="#111113" stroke="#a1a1aa" strokeWidth="2" />
-        <text x="500" y="583" textAnchor="middle" fontSize="12" fill="#a1a1aa">Vista de referencia · pads neutros, sin reproducción simulada</text>
+        {!compact && <text x="500" y="583" textAnchor="middle" fontSize="12" fill="#a1a1aa">Vista de referencia · pads neutros, sin reproducción simulada</text>}
       </svg>
     </div>;
   }

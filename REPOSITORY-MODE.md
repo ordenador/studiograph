@@ -9,8 +9,16 @@ Repository mode saves canonical device.toml/setup.toml records, not exported
 StudioGraph JSON or native Hapax saves. The parent API preserves unknown fields,
 checks revisions before writes, creates local backups and replaces one TOML
 atomically. UI has pending/save/error states, undo, explicit save and Ctrl/Cmd+S.
-Track routing is edited in a table, with a physical-device graph and original
-rear/top Hapax SVG as complementary views. NULL routes never invent a cable.
+The home page previews a setup with an ordered visual map: Hapax, named outputs,
+direction arrows and one row per physical unit. Expand equipment to see its
+parts/channels and jump to the selected track. The setup stays selected when
+returning home. NULL routes have an incomplete dashed line, no direction arrow,
+and an action to choose the output; they never invent a cable.
+
+Track routing uses a readable list with controls revealed per track. Metadata
+lives under Ajustes; the rear/top Hapax SVG is under Panel Hapax, and the original
+movable graph is under Canvas libre. The sidebar equipment catalog collapses,
+search reveals matching equipment, and narrow screens use a Biblioteca button.
 
 The parent repository documents UX, API, limitations and maintenance in
  docs/studiograph-ux.md and docs/studiograph-fork.md. This app does not commit,

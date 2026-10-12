@@ -1,6 +1,6 @@
 # Hapax Oconfig
 
-**O de Ordenador.** Nuestra app para mantener equipos, setups y routing de Hapax. Basada en [StudioGraph de turnerm5](https://github.com/turnerm5/studiograph), conservando su historial y autoría.
+Nuestra app para mantener equipos, setups y routing de Hapax. Basada en [StudioGraph de turnerm5](https://github.com/turnerm5/studiograph), conservando su historial y autoría.
 
 El logo propio combina una O de ocho pads con una marca de configuración lista.
 Los colores se inspiran en los pads de Hapax; no son una paleta oficial de Squarp.
@@ -14,8 +14,10 @@ A visual MIDI studio designer for planning instrument routing, managing CC/NRPN 
 
 This fork opens the devices and setups maintained in
 [ordenador/hapax](https://github.com/ordenador/hapax), with direct repository
-saving, track routing tables, a physical-device graph and original rear/top
-Hapax vector views. Start from that parent repository with `make oconfig-setup`
+saving and a visual home page: Hapax → named output → physical equipment.
+Expand a device to inspect its parts and open a track directly. Track controls
+open one row at a time; rear/top Hapax vector views and a free-layout canvas
+remain available in the setup editor. Start from the parent repository with `make oconfig-setup`
 and `make oconfig-dev`. See [REPOSITORY-MODE.md](REPOSITORY-MODE.md).
 
 The previous independent editor remains at `/standalone`; it can run with
