@@ -1,20 +1,10 @@
-import { Analytics } from '@vercel/analytics/react';
-import { Sidebar } from './components/Sidebar/Sidebar';
-import { StudioCanvas } from './components/Canvas/StudioCanvas';
-import { NodeEditor } from './components/Panels/NodeEditor';
-import { useStudioStore } from './store/useStudioStore';
+import { lazy, Suspense } from 'react';
+import { RepositoryWorkspace } from './components/Repository/RepositoryWorkspace';
 
-function App() {
-  const selectedNodeId = useStudioStore((state) => state.selectedNodeId);
+const StandaloneEditor = lazy(() => import('./StandaloneEditor'));
 
-  return (
-    <div className="flex h-screen bg-gray-950">
-      <Sidebar />
-      <StudioCanvas />
-      {selectedNodeId && <NodeEditor />}
-      <Analytics />
-    </div>
-  );
+export default function App() {
+  return window.location.pathname === '/standalone'
+    ? <Suspense fallback={<p style={{ padding: 24 }}>Abriendo editor independiente…</p>}><StandaloneEditor /></Suspense>
+    : <RepositoryWorkspace />;
 }
-
-export default App;

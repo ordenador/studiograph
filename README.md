@@ -2,6 +2,18 @@
 
 A visual MIDI studio designer for planning instrument routing, managing CC/NRPN definitions, and exporting synthesizer configurations for the Squarp Hapax sequencer.
 
+## Mario's Hapax workspace
+
+This fork opens the devices and setups maintained in
+[ordenador/hapax](https://github.com/ordenador/hapax), with direct repository
+saving, track routing tables, a physical-device graph and original rear/top
+Hapax vector views. Start from that parent repository with `make studio-setup`
+and `make studio-dev`. See [REPOSITORY-MODE.md](REPOSITORY-MODE.md).
+
+The previous independent editor remains at `/standalone`; it can run with
+`npm ci` and `npm run dev` without the repository API. Its JSON workflows do
+not save canonical Hapax metadata. Original history and authorship are retained.
+
 ## Features
 
 - **Visual routing canvas** — drag-and-drop instruments onto a node graph and connect MIDI, audio, CV, and USB ports with type-safe wiring

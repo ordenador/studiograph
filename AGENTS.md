@@ -15,5 +15,6 @@ real compartido de Node ni depender del orden de las declaraciones del test.
 
 Equipos y setups canónicos viven en el repo Hapax contenedor. JSON StudioGraph
 no equivale a un save nativo Hapax. No escribir SD, MIDI o dispositivos ni
-flashear FM-1 como efecto de editar/exportar. Cambios UI deben mantener el
-diseño y componentes existentes.
+flashear FM-1 como efecto de editar/exportar. Mario autorizo reorganizar la UX,
+visualizacion y librerias si mejoran el flujo con evidencia. Guardar fichas en
+el repo por la API local, preservando campos desconocidos y conflictos.
