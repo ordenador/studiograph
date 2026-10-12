@@ -20,6 +20,11 @@ open one row at a time; rear/top Hapax vector views and a free-layout canvas
 remain available in the setup editor. Start from the parent repository with `make oconfig-setup`
 and `make oconfig-dev`. See [REPOSITORY-MODE.md](REPOSITORY-MODE.md).
 
+Use **Copiar enlace** to share the selected setup, tab, track or inspected port.
+For example, `/?setup=felucca-duo&tab=hapax` opens that setup's rear panel. The
+panel shows output-to-device routes from its configured tracks; unassigned
+outputs stay explicit. Links restore the view and use saved repository data.
+
 The previous independent editor remains at `/standalone`; it can run with
 `npm ci` and `npm run dev` without the repository API. Its JSON workflows do
 not save canonical Hapax metadata. Original history and authorship are retained.

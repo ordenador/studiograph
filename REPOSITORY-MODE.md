@@ -20,6 +20,26 @@ lives under Ajustes; the rear/top Hapax SVG is under Panel Hapax, and the origin
 movable graph is under Canvas libre. The sidebar equipment catalog collapses,
 search reveals matching equipment, and narrow screens use a Biblioteca button.
 
+The address bar tracks the current setup and view. Copy it directly or use
+Copiar enlace. Examples:
+
+- `/?setup=felucca-duo&tab=hapax` opens Panel Hapax.
+- `/?setup=felucca-duo&tab=hapax&panel=top` opens its top reference.
+- `/?setup=felucca-duo&tab=tracks&track=4` opens B Bell for editing.
+- `/?setup=studio&tab=hapax&port=A` inspects MIDI A.
+- `/?setup=felucca-duo&device=fm1-b` opens the unit's metadata.
+
+The tabs are home, connections, tracks, hapax, canvas and settings. Reload and
+back/forward restore the view. A draft remains when changing tabs within its
+record; leaving it prompts to keep editing or discard, including browser back.
+Links describe the view, using the saved repository data; they do not contain
+draft edits or turn on hardware assignment mode. Unknown records show an error
+and a route back home. Clipboard failures expose a selectable URL.
+
+The rear panel draws configured output-to-device routes, with channels and a
+track list. CV/Gate pairs use both physical jacks. Unassigned tracks get a clear
+message and a shortcut to Pistas; no cables are invented for NULL outputs.
+
 The parent repository documents UX, API, limitations and maintenance in
  docs/studiograph-ux.md and docs/studiograph-fork.md. This app does not commit,
 push, access MIDI/USB devices, flash firmware or write SD cards. Definitions

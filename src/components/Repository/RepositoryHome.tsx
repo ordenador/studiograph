@@ -1,5 +1,6 @@
 import { ArrowRight, Music2 } from 'lucide-react';
 import { RoutingMap } from './RoutingMap';
+import { CopyViewLink } from './CopyViewLink';
 import { routeWarnings, stateLabel, type Library, type Selection } from './repository';
 
 export function RepositoryHome({ library, setupId, onSetupChange, onOpen }: {
@@ -9,7 +10,7 @@ export function RepositoryHome({ library, setupId, onSetupChange, onOpen }: {
   const setup = library.setups.find(s => s.id === setupId) || library.setups[0];
   const warnings = setup ? routeWarnings(setup.tracks) : [];
   return <main className="repo-content repo-home">
-    <header className="home-header"><h1>Tu estudio</h1><p>Elige un setup y sigue el recorrido desde Hapax hasta cada equipo.</p></header>
+    <header className="home-header"><div className="home-title"><h1>Tu estudio</h1><CopyViewLink key={setupId} /></div><p>Elige un setup y sigue el recorrido desde Hapax hasta cada equipo.</p></header>
     <nav className="home-setups" aria-label="Setup que estás visualizando">{[...library.setups].sort((a, b) => Number(b.id === 'studio') - Number(a.id === 'studio')).map(s => <button key={s.id}
       aria-pressed={setup?.id === s.id} onClick={() => onSetupChange(s.id)}>{s.title}</button>)}</nav>
     {setup ? <>

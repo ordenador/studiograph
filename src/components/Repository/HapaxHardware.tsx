@@ -1,35 +1,15 @@
 import React, { useState } from 'react';
+import { CONNECTORS, type Connector } from './hardwareConnectors';
+import type { PanelRoute } from './hardwareRouting';
 
 type HapaxHardwareProps = {
   compact?: boolean;
   view?: 'rear' | 'top';
   activePorts?: string[];
+  selectedPort?: string;
+  routes?: PanelRoute[];
   onPortClick?: (port: string) => void;
 };
-
-type Connector = {
-  x: number;
-  label: string;
-  name: string;
-  kind: 'din' | 'trs' | 'usb-a' | 'usb-b';
-  port?: string;
-};
-
-// Looking directly at the rear connectors, not through the front panel.
-// Positions are a readable schematic based on packshots; they are not CAD dimensions.
-const CONNECTORS: Connector[] = [
-  { x: 103, label: 'Host', name: 'USB host · bidireccional', kind: 'usb-a', port: 'USBH' },
-  { x: 147, label: 'Device', name: 'USB device · bidireccional', kind: 'usb-b', port: 'USBD' },
-  ...[4, 3, 2, 1].map((n, i): Connector => ({ x: 289 + 32 * i, label: String(n), name: `Gate out ${n}`, kind: 'trs', port: `G${n}` })),
-  ...[4, 3, 2, 1].map((n, i): Connector => ({ x: 429 + 32 * i, label: String(n), name: `CV out ${n}`, kind: 'trs', port: `CV${n}` })),
-  ...[2, 1].map((n, i): Connector => ({ x: 569 + 32 * i, label: String(n), name: `CV in ${n}`, kind: 'trs' })),
-  { x: 649, label: 'D', name: 'MIDI out D · TRS tipo A', kind: 'trs', port: 'D' },
-  { x: 699, label: 'C', name: 'MIDI out C · DIN', kind: 'din', port: 'C' },
-  { x: 749, label: 'B', name: 'MIDI out B · DIN', kind: 'din', port: 'B' },
-  { x: 799, label: 'A', name: 'MIDI out A · DIN', kind: 'din', port: 'A' },
-  { x: 859, label: 'B', name: 'MIDI in B · TRS tipo A', kind: 'trs' },
-  { x: 909, label: 'A', name: 'MIDI in A · DIN', kind: 'din' },
-];
 
 function portActive(port: string | undefined, activePorts: string[]): boolean {
   if (!port) return false;
@@ -63,11 +43,13 @@ function ConnectorShape({ kind, color }: { kind: Connector['kind']; color: strin
 }
 
 /** Original vector reference of Hapax. Active means configured in the setup, not live MIDI. */
-export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, compact = false }: HapaxHardwareProps) {
+export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, compact = false, selectedPort = '', routes = [] }: HapaxHardwareProps) {
   const id = React.useId();
   const [focusedPort, setFocusedPort] = useState<string | null>(null);
   const titleId = `${id}-title`;
   const descriptionId = `${id}-description`;
+  const routeRows = Math.ceil(routes.length / 5);
+  const rearHeight = routes.length ? 410 + (routeRows - 1) * 120 : 235;
 
   if (view === 'top') {
     const button = (x: number, y: number, label: string, color = '#111113', width = 30) => <g key={`${x}-${y}`}>
@@ -110,7 +92,7 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
   }
 
   return <div style={{ overflowX: 'auto' }}>
-    <svg viewBox="0 0 1000 235" fontFamily="system-ui, sans-serif" style={{ display: 'block', width: '100%', minWidth: 900 }} role="group" aria-labelledby={`${titleId} ${descriptionId}`}>
+    <svg viewBox={`0 0 1000 ${rearHeight}`} fontFamily="system-ui, sans-serif" style={{ display: 'block', width: '100%', minWidth: 900 }} role="group" aria-labelledby={`${titleId} ${descriptionId}`}>
       <title id={titleId}>Hapax · panel trasero, mirando los conectores</title>
       <desc id={descriptionId}>Referencia del panel trasero. Las salidas configuradas se distinguen por un borde de color y una marca. {onPortClick ? 'Activa una salida con clic, Enter o espacio para seleccionarla en el editor.' : 'Las entradas, alimentación, SD y pedal se muestran como referencia.'} No indica conexión física ni actividad MIDI.</desc>
       <text x="24" y="27" fill="#e4e4e7" fontSize="15">Panel trasero · mirando los conectores</text>
@@ -128,7 +110,7 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
       {[{ x: 125, text: 'USB ↔' }, { x: 337, text: 'Gate out' }, { x: 477, text: 'CV out' }, { x: 585, text: 'CV in' }, { x: 724, text: 'MIDI out' }, { x: 884, text: 'MIDI in' }].map(({ x, text }) => <text key={text} x={x} y="86" textAnchor="middle" fill="#d4d4d8" fontSize="11">{text}</text>)}
       {CONNECTORS.map((connector) => {
         const active = portActive(connector.port, activePorts);
-        const focused = focusedPort === connector.port;
+        const focused = focusedPort === connector.port || portActive(connector.port, [selectedPort]);
         const interactive = !!connector.port && !!onPortClick;
         const color = active ? connectorColor(connector.port) : '#a1a1aa';
         return <g
@@ -157,8 +139,28 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
         </g>;
       })}
       <path d="M278 158H396 M418 158H536 M558 158H612 M633 158H819 M845 158H929" stroke="#71717a" />
-      <text x="24" y="199" fill="#a1a1aa" fontSize="12">Marca de color = salida configurada en el setup</text>
-      <text x="24" y="221" fill="#a1a1aa" fontSize="12">Referencia de conectores · no acredita cableado físico ni actividad MIDI</text>
+      {routes.map((route, index) => {
+        const row = Math.floor(index / 5);
+        const count = Math.min(5, routes.length - row * 5);
+        const x = (index % 5 + .5) * 1000 / count;
+        const y = 280 + row * 120;
+        const color = connectorColor(route.port);
+        return <g key={`${route.port}:${route.device}`} role="img" aria-label={`${route.title} · ${route.label}`}>
+          <title>{route.title} · {route.label} · pistas {route.tracks.map(t => t.number).join(', ')}</title>
+          {route.sources.map(source => <g key={source}>
+            <circle cx={source} cy="173" r="3" fill={color} />
+            <path data-route={route.port} d={`M${source} 173 C${source} ${210 + row * 20},${x} ${y - 40},${x} ${y}`} fill="none" stroke={color} strokeWidth="2" />
+          </g>)}
+          <foreignObject x={x - 86} y={y} width="172" height="86">
+            <div style={{ padding: 10, background: '#18181b', border: `1px solid ${color}`, borderRadius: 4, color: '#f4f4f5', fontSize: 12, lineHeight: 1.4 }}>
+              <strong style={{ display: 'block', fontWeight: 500 }}>{route.title}</strong>
+              <span style={{ display: 'block', color: '#a1a1aa', marginTop: 4 }}>{route.label}</span>
+            </div>
+          </foreignObject>
+        </g>;
+      })}
+      <text x="24" y={rearHeight - 36} fill="#a1a1aa" fontSize="12">Marca de color = salida configurada en el setup</text>
+      <text x="24" y={rearHeight - 14} fill="#a1a1aa" fontSize="12">Referencia de conectores · no acredita cableado físico ni actividad MIDI</text>
     </svg>
   </div>;
 }

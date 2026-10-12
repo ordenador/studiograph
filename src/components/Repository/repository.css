@@ -96,6 +96,16 @@
 .repo-track-fields input:invalid { border-color:#fca5a5; }
 
 .repo-content { container-type:inline-size; }
+.home-title { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.repo-copy-link { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.repo-copy-link > [role=status] { color:#a1a1aa; font-size:12px; }
+.repo-copy-link > input { flex-basis:100%; }
+.repo-hardware-empty { border-top:1px solid #3f3f46; padding-top:16px; }
+.repo-hardware-empty p { margin:0 0 12px; color:#d4d4d8; }
+.repo-panel-routes { list-style:none; margin:20px 0 0; padding:0; }
+.repo-panel-routes li { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; border-top:1px solid #3f3f46; padding:12px 0; }
+.repo-panel-routes li > span { color:#a1a1aa; }
+.repo-panel-routes li button { margin-left:auto; }
 .home-header { padding:28px 28px 20px; }
 .home-header h1 { font-size:24px; }
 .home-header p { color:#a1a1aa; margin:6px 0 0; line-height:1.6; }

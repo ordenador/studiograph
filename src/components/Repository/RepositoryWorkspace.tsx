@@ -4,6 +4,10 @@ import { HapaxHardware } from './HapaxHardware';
 import { RepositoryDiagram } from './RepositoryDiagram';
 import { RepositoryHome } from './RepositoryHome';
 import { RoutingMap } from './RoutingMap';
+import { CopyViewLink } from './CopyViewLink';
+import { locationQuery, openLocation, selectionFor, type WorkspaceLocation } from './workspaceLocation';
+import { useWorkspaceNavigation } from './useWorkspaceNavigation';
+import { panelRoutes } from './hardwareRouting';
 import { changes, isDirty, portLabel, request, routeWarnings, stateLabel,
   type Device, type Envelope, type Library, type Selection, type Setup, type Track } from './repository';
 import './repository.css';
@@ -72,16 +76,17 @@ function TrackList({ setup, library, focusedTrack, onFocusTrack, onChange, onDef
   </article>)}{!setup.tracks.length && <p className="repo-empty">Este setup aún no tiene pistas. Añade un equipo para empezar.</p>}</section>;
 }
 
-function Editor({ selection, library, initialTrack = 0, onSaved, onDirty }: { selection: Selection; library: Library; initialTrack?: number;
+function Editor({ selection, library, location, onNavigate, onSaved, onDirty }: { selection: Selection; library: Library;
+  location: WorkspaceLocation; onNavigate: (location: WorkspaceLocation) => void;
   onSaved: (selection: Selection, record: Setup | Device) => void; onDirty: (dirty: boolean) => void }) {
   const [base, setBase] = useState<Envelope<Setup | Device> | null>(null);
   const [draft, setDraft] = useState<Setup | Device | null>(null);
   const [history, setHistory] = useState<(Setup | Device)[]>([]);
-  const [view, setView] = useState<'overview' | 'tracks' | 'diagram' | 'hardware' | 'settings'>(initialTrack ? 'tracks' : 'overview');
-  const [focusedTrack, setFocusedTrack] = useState(initialTrack);
-  const [hardwareView, setHardwareView] = useState<'rear' | 'top'>('rear');
+  const view = location.view;
+  const focusedTrack = location.track;
+  const hardwareView = location.panel;
   const [hardwareTrack, setHardwareTrack] = useState(0);
-  const [focusedPort, setFocusedPort] = useState('');
+  const focusedPort = location.port;
   const [definition, setDefinition] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -127,6 +132,8 @@ function Editor({ selection, library, initialTrack = 0, onSaved, onDirty }: { se
   const setup = selection.category === 'setups' ? draft as Setup : null;
   const device = selection.category === 'devices' ? draft as Device : null;
   const warnings = setup ? routeWarnings(setup.tracks) : [];
+  const configuredRoutes = setup ? panelRoutes(setup.tracks, library.devices) : [];
+  const pendingTracks = setup?.tracks.filter(t => t.port === 'NULL') || [];
   const changeTracks = (tracks: Track[]) => { if (setup) edit({ ...setup, tracks }); };
   const addTrack = () => {
     if (!setup) return;
@@ -135,7 +142,7 @@ function Editor({ selection, library, initialTrack = 0, onSaved, onDirty }: { se
     if (!number || !d || !def) return;
     const known = library.setups.flatMap(s => s.tracks).find(t => t.device === d.id);
     changeTracks([...setup.tracks, { number, name: `Pista ${number}`, device: d.id, definition: known?.definition || def.name, port: 'NULL', channel: 1 }]);
-    setFocusedTrack(number);
+    onNavigate({ ...location, track: number });
   };
   const metadata = <div className="repo-metadata"><label>Nombre<input value={draft.title} maxLength={256} onChange={e => edit({ ...draft, title: e.target.value })} /></label>
     {setup && <label>Clock<select value={setup.clock_source} onChange={e => edit({ ...setup, clock_source: e.target.value })}>
@@ -147,6 +154,7 @@ function Editor({ selection, library, initialTrack = 0, onSaved, onDirty }: { se
     <header className="repo-toolbar"><div><span className="repo-muted">{selection.category === 'setups' ? 'Setup' : 'Equipo'}</span>
       <strong>{draft.title}</strong></div><div className="repo-toolbar-actions">
       <span role="status" aria-live="polite">{busy ? 'Guardando…' : dirty ? 'Cambios sin guardar' : message || 'Sin cambios'}</span>
+      <CopyViewLink key={locationQuery(location)} dirty={dirty} />
       <button title="Deshacer último cambio" disabled={!history.length || busy} onClick={() => {
         const prev = history.at(-1); if (prev) { setDraft(prev); setHistory(history.slice(0, -1)); setError(''); }
       }}><Undo2 size={16} /><span>Deshacer</span></button>
@@ -156,25 +164,33 @@ function Editor({ selection, library, initialTrack = 0, onSaved, onDirty }: { se
     {error && <div role="alert" className="repo-error">{error}</div>}
     <fieldset disabled={busy} className="repo-edit-area">{device && metadata}
     {setup && <>
-      <nav className="repo-tabs" aria-label="Vista del setup">{(['overview', 'tracks', 'hardware', 'diagram', 'settings'] as const).map(v => <button key={v} aria-pressed={view === v} onClick={() => setView(v)}>
+      <nav className="repo-tabs" aria-label="Vista del setup">{(['overview', 'tracks', 'hardware', 'diagram', 'settings'] as const).map(v => <button key={v} aria-pressed={view === v} onClick={() => onNavigate({ ...location, view: v })}>
         {{ overview: 'Conexiones', tracks: 'Pistas', diagram: 'Canvas libre', hardware: 'Panel Hapax', settings: 'Ajustes' }[v]}</button>)}<span>{setup.tracks.length} / 16 pistas</span>
         {view === 'tracks' && <button className="repo-add" disabled={setup.tracks.length >= 16 || busy} onClick={addTrack}><Plus size={16} />Añadir pista</button>}
       </nav>
       {view === 'settings' && metadata}
-      {view === 'overview' && <RoutingMap setup={setup} devices={library.devices} onEditTrack={number => { setFocusedTrack(number); setView('tracks'); }} />}
-      {view === 'tracks' && <TrackList setup={setup} library={library} focusedTrack={focusedTrack} onFocusTrack={setFocusedTrack} onChange={changeTracks} onDefinition={setDefinition} />}
+      {view === 'overview' && <RoutingMap setup={setup} devices={library.devices} onEditTrack={number => onNavigate({ ...location, track: number, view: 'tracks' })} />}
+      {view === 'tracks' && <>{focusedTrack > 0 && !setup.tracks.some(t => t.number === focusedTrack) && <p className="repo-routing-notes" role="status">La pista {focusedTrack} no existe en la configuración guardada de este setup.</p>}<TrackList setup={setup} library={library} focusedTrack={focusedTrack} onFocusTrack={number => onNavigate({ ...location, track: number })} onChange={changeTracks} onDefinition={setDefinition} /></>}
       {view === 'diagram' && <RepositoryDiagram setup={setup} devices={library.devices} onLayout={layout => edit({ ...setup, studio_layout: layout })} />}
       {view === 'hardware' && <section className="repo-hardware">
-        <div className="repo-hardware-toolbar"><div><button aria-pressed={hardwareView === 'rear'} onClick={() => setHardwareView('rear')}>Conexiones</button>
-          <button aria-pressed={hardwareView === 'top'} onClick={() => setHardwareView('top')}>Vista superior</button></div>
+        <div className="repo-hardware-toolbar"><div><button aria-pressed={hardwareView === 'rear'} onClick={() => onNavigate({ ...location, panel: 'rear' })}>Conexiones</button>
+          <button aria-pressed={hardwareView === 'top'} onClick={() => onNavigate({ ...location, panel: 'top' })}>Vista superior</button></div>
           {hardwareView === 'rear' && <label>Asignar salida a<select aria-label="Pista para asignar salida" value={hardwareTrack} onChange={e => setHardwareTrack(Number(e.target.value))}>
             <option value={0}>Solo inspeccionar</option>{setup.tracks.map(t => <option key={t.number} value={t.number}>{t.number}. {t.name}</option>)}
           </select></label>}</div>
-        <HapaxHardware view={hardwareView} activePorts={setup.tracks.map(t => t.port)} onPortClick={p => {
-          setFocusedPort(p); if (hardwareTrack) changeTracks(setup.tracks.map(t => t.number === hardwareTrack ? { ...t, port: p, channel: p.startsWith('CV') || p.startsWith('G') ? 0 : t.channel || 1 } : t));
+        <HapaxHardware view={hardwareView} activePorts={setup.tracks.map(t => t.port)} selectedPort={focusedPort} routes={configuredRoutes} onPortClick={p => {
+          onNavigate({ ...location, port: p }); if (hardwareTrack) changeTracks(setup.tracks.map(t => t.number === hardwareTrack ? { ...t, port: p, channel: p.startsWith('CV') || p.startsWith('G') ? 0 : t.channel || 1 } : t));
         }} />
         {hardwareView === 'rear' && focusedPort && <p>{portLabel(focusedPort)} · {setup.tracks.filter(t => t.port === focusedPort || ((focusedPort.startsWith('CV') || focusedPort.startsWith('G')) && t.port === `CVG${focusedPort.slice(-1)}`)).map(t => `${t.number}. ${t.name}`).join(', ') || 'Sin pistas asignadas'}</p>}
         {hardwareView === 'rear' && <p className="repo-muted">Selecciona una pista y pulsa una salida para asignarla. Para una pareja CV/Gate, elige CV/Gate en Pistas.</p>}
+        {hardwareView === 'rear' && pendingTracks.length > 0 && <div className="repo-hardware-empty">
+          <p>{pendingTracks.length} {pendingTracks.length === 1 ? 'pista no tiene' : 'pistas no tienen'} salida asignada. {configuredRoutes.length ? 'Solo se muestran los recorridos ya configurados.' : 'Por eso este panel todavía no muestra recorridos hacia los equipos.'}</p>
+          <button onClick={() => onNavigate({ ...location, view: 'tracks', track: pendingTracks[0].number })}>Asignar salidas en Pistas</button>
+        </div>}
+        {hardwareView === 'rear' && configuredRoutes.length > 0 && <ul className="repo-panel-routes" aria-label="Recorridos configurados">{configuredRoutes.map(r => <li key={`${r.port}:${r.device}`}>
+          <strong>{r.label}</strong><span>→ {r.title}</span><span>{r.tracks.map(t => `${t.number}. ${t.name}`).join(' · ')}</span>
+          <button onClick={() => onNavigate({ ...location, view: 'tracks', track: r.tracks[0].number })}>Editar pistas</button>
+        </li>)}</ul>}
       </section>}
       {!!warnings.length && <details className="repo-routing-notes"><summary>{warnings.length} puntos de routing por revisar</summary><ul>{warnings.map(w => <li key={w}>{w}</li>)}</ul></details>}
       <footer className="repo-record-footer">{base.path}<span>{library.songs.filter(s => s.setup === setup.id).map(s => `${s.title} · ${s.bpm} BPM`).join(' · ')}</span></footer>
@@ -193,25 +209,19 @@ function Editor({ selection, library, initialTrack = 0, onSaved, onDirty }: { se
 export function RepositoryWorkspace() {
   const [library, setLibrary] = useState<Library | null>(null);
   const [error, setError] = useState('');
-  const [selection, setSelection] = useState<Selection | null>(null);
-  const [initialTrack, setInitialTrack] = useState(0);
-  const [homeSetupId, setHomeSetupId] = useState('studio');
-  const [pending, setPending] = useState<{ selection: Selection | null; track: number } | null>(null);
   const [query, setQuery] = useState('');
   const [libraryOpen, setLibraryOpen] = useState(false);
-  const [equipmentOpen, setEquipmentOpen] = useState(false);
+  const [equipmentOpen, setEquipmentOpen] = useState(() => !!new URLSearchParams(window.location.search).get('device'));
   const dirty = useRef(false);
+  const { location, navigate, pending, cancel, discard } = useWorkspaceNavigation(dirty);
+  const selection = selectionFor(location);
   const onDirty = useCallback((value: boolean) => { dirty.current = value; }, []);
   useEffect(() => { let active = true; request<Library>('library').then(r => {
     if (active) setLibrary(r);
   }).catch(e => { if (active) setError(e.message); }); return () => { active = false; }; }, []);
   const select = (next: Selection | null, track = 0) => {
-    if (next?.category === selection?.category && next?.id === selection?.id) return;
-    if (dirty.current) setPending({ selection: next, track }); else {
-      setInitialTrack(track); setSelection(next); setLibraryOpen(false);
-      if (next?.category === 'devices') setEquipmentOpen(true);
-      if (next?.category === 'setups') setHomeSetupId(next.id);
-    }
+    navigate(openLocation(next, location, track)); setLibraryOpen(false);
+    if (next?.category === 'devices') setEquipmentOpen(true);
   };
   const onSaved = useCallback((s: Selection, record: Setup | Device) => setLibrary(old => old ? { ...old,
     devices: s.category === 'devices' ? old.devices.map(d => d.id === s.id ? record as Device : d) : old.devices,
@@ -220,6 +230,9 @@ export function RepositoryWorkspace() {
     <p role={error ? 'alert' : 'status'}>{error || 'Abriendo la biblioteca del repo…'}</p>
     {error && <><button onClick={() => window.location.reload()}>Reintentar</button><a href="/standalone">Abrir editor independiente</a></>}
   </main></div>;
+  const unknown = selection?.category === 'devices'
+    ? !library.devices.some(d => d.id === selection.id) ? `No existe el equipo «${selection.id}» en esta biblioteca.` : ''
+    : (location.view !== 'home' || library.setups.length > 0) && !library.setups.some(s => s.id === location.setup) ? `No existe el setup «${location.setup}» en esta biblioteca.` : '';
   return <div className="repo-workspace"><aside className={`repo-sidebar${libraryOpen ? ' library-open' : ''}`}><div className="repo-brand"><img src="/oconfig.svg" width="32" height="32" alt="" /><h1>Hapax Oconfig</h1></div>
     <button className="repo-mobile-library" aria-expanded={libraryOpen} aria-controls="repo-library" onClick={() => setLibraryOpen(!libraryOpen)}>Biblioteca</button>
     <input type="search" aria-label="Buscar en biblioteca" placeholder="Buscar equipo o setup" value={query} onChange={e => setQuery(e.target.value)} />
@@ -230,15 +243,10 @@ export function RepositoryWorkspace() {
         aria-current={selection?.category === category && selection.id === item.id ? 'page' : undefined} onClick={() => select({ category, id: item.id })}>
         <span>{item.title}</span><small>{category === 'setups' ? `${(item as Setup).tracks.length} pistas` : item.id}</small>
       </button>)}</div></section>)}</nav><a className="repo-standalone-link" href="/standalone" onClick={e => { if (dirty.current && !window.confirm('Hay cambios sin guardar. ¿Salir sin guardarlos?')) e.preventDefault(); }}>Editor independiente</a>
-  </aside>{selection ? <Editor key={`${selection.category}:${selection.id}`} selection={selection} library={library} initialTrack={initialTrack} onSaved={onSaved} onDirty={onDirty} /> : <RepositoryHome library={library} setupId={homeSetupId} onSetupChange={setHomeSetupId} onOpen={select} />}
-    {pending && <Dialog title="Cambios sin guardar" onClose={() => setPending(null)}>
+  </aside>{unknown ? <main className="repo-content repo-start"><p role="alert">{unknown}</p><button onClick={() => navigate({ ...openLocation(null, location), setup: library.setups[0]?.id || 'studio' })}>Ir al inicio</button></main> : selection ? <Editor key={`${selection.category}:${selection.id}`} selection={selection} library={library} location={location} onNavigate={navigate} onSaved={onSaved} onDirty={onDirty} /> : <RepositoryHome library={library} setupId={location.setup} onSetupChange={setup => navigate({ ...location, setup })} onOpen={select} />}
+    {pending && <Dialog title="Cambios sin guardar" onClose={cancel}>
       <h2 id="unsaved-title">Cambios sin guardar</h2><p>Guarda la ficha actual para conservar los cambios antes de abrir otra.</p>
-      <div><button autoFocus onClick={() => setPending(null)}>Seguir editando</button><button onClick={() => {
-        dirty.current = false; setSelection(pending.selection); setInitialTrack(pending.track); setLibraryOpen(false);
-        if (pending.selection?.category === 'devices') setEquipmentOpen(true);
-        if (pending.selection?.category === 'setups') setHomeSetupId(pending.selection.id);
-        setPending(null);
-      }}>Descartar y cambiar</button></div>
+      <div><button autoFocus onClick={cancel}>Seguir editando</button><button onClick={discard}>Descartar y cambiar</button></div>
     </Dialog>}
   </div>;
 }
