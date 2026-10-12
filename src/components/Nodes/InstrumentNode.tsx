@@ -150,10 +150,10 @@ function InstrumentNodeComponent({ id, data }: NodeProps<InstrumentNodeType>) {
     }
   };
 
-  // Determine border color: selection takes priority, then Hapax purple, then default gray
+  // Neutral equipment surfaces; port colors carry the signal type.
   const getBorderClass = () => {
-    if (selected) return 'border-blue-500 ring-2 ring-blue-500/30';
-    if (nodeData.isHapax) return 'border-purple-500';
+    if (selected) return 'border-white';
+    if (nodeData.isHapax) return 'border-gray-400';
     return 'border-gray-600';
   };
 
@@ -163,7 +163,7 @@ function InstrumentNodeComponent({ id, data }: NodeProps<InstrumentNodeType>) {
       onClick={handleClick}
       style={{ width: calculatedWidth, minWidth: minWidth }}
       className={`
-        relative rounded-lg border-2 shadow-lg
+        relative rounded-lg border
         ${nodeData.isHapax ? 'bg-gray-900' : 'bg-gray-800'}
         ${getBorderClass()}
       `}
@@ -253,15 +253,15 @@ function InstrumentNodeComponent({ id, data }: NodeProps<InstrumentNodeType>) {
       {/* Header */}
       <div className={`
         px-3 py-2 flex items-center justify-between
-        ${nodeData.isHapax ? 'bg-purple-900/50' : 'bg-gray-700/50'}
+        bg-gray-700/50
       `}>
         <div className="flex items-center gap-2">
           {nodeData.isHapax
-            ? <Cpu size={18} className="text-purple-400" />
+            ? <Cpu size={18} className="text-gray-300" />
             : renderIcon(nodeData.iconId, 16, "text-blue-400")
           }
           <div>
-            <div className={`font-semibold text-white ${nodeData.isHapax ? 'text-base' : 'text-sm'}`}>
+            <div title={nodeData.name} className={`font-semibold text-white truncate ${nodeData.isHapax ? 'text-base' : 'text-sm'}`}>
               {nodeData.name}
             </div>
             <div className="text-[10px] text-gray-400">{nodeData.manufacturer}</div>
@@ -271,7 +271,8 @@ function InstrumentNodeComponent({ id, data }: NodeProps<InstrumentNodeType>) {
           <button
             onClick={handleDelete}
             className="text-gray-400 hover:text-red-400 transition-colors"
-            title="Remove"
+            title="Quitar bloque"
+            aria-label={`Quitar bloque ${nodeData.name}`}
           >
             <Trash2 size={14} />
           </button>
@@ -288,8 +289,8 @@ function InstrumentNodeComponent({ id, data }: NodeProps<InstrumentNodeType>) {
                 <span className="text-purple-400 font-mono">{hapaxPort}</span>
               </>
             )}
-            <span className="text-gray-500">CH:</span>
-            <span className="text-white font-mono">{nodeData.channel}</span>
+            {[...nodeData.inputs, ...nodeData.outputs].some(p => p.type === 'midi' || p.type === 'usb') && <><span className="text-gray-500">CH:</span>
+            <span className="text-white font-mono">{nodeData.channel}</span></>}
             <span className="text-gray-500 ml-2">Type:</span>
             <span className="text-white">{nodeData.type}</span>
           </div>
@@ -317,46 +318,11 @@ function InstrumentNodeComponent({ id, data }: NodeProps<InstrumentNodeType>) {
 
       {/* Legend */}
       <div className="px-3 py-1 border-t border-gray-700 flex gap-2 flex-wrap text-[8px] text-gray-500">
-        <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-green-500"></span>
-          <span>MIDI In</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-          <span>MIDI Out</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-orange-500"></span>
-          <span>Audio In</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-red-500"></span>
-          <span>Audio Out</span>
-        </div>
-        {nodeData.inputs.some(p => p.type === 'cv') && (
-          <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
-            <span>CV In</span>
-          </div>
-        )}
-        {nodeData.outputs.some(p => p.type === 'cv') && (
-          <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-purple-500"></span>
-            <span>CV Out</span>
-          </div>
-        )}
-        {nodeData.inputs.some(p => p.type === 'usb') && (
-          <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-cyan-500"></span>
-            <span>USB Device</span>
-          </div>
-        )}
-        {nodeData.outputs.some(p => p.type === 'usb') && (
-          <div className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-cyan-300"></span>
-            <span>USB Host</span>
-          </div>
-        )}
+        {(['midi', 'audio', 'cv', 'usb'] as const).flatMap(type => (['inputs', 'outputs'] as const).map(direction =>
+          nodeData[direction].some(p => p.type === type) && <span key={`${type}:${direction}`} style={{ color: PORT_COLORS[type][direction === 'inputs' ? 'input' : 'output'].bg }}>
+            {type.toUpperCase()} {direction === 'inputs' ? 'In' : 'Out'}
+          </span>))}
+        {!nodeData.inputs.length && !nodeData.outputs.length && <span>Puertos por definir</span>}
       </div>
 
       {/* Resize handle */}

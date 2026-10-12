@@ -15,6 +15,7 @@ export interface Setup {
   physical_verified: boolean;
   tracks: Track[];
   studio_layout?: Layout;
+  oconfig_workspace?: string;
 }
 export interface Device {
   id: string;
@@ -60,7 +61,8 @@ export function changes(category: Selection['category'], record: Setup | Device)
   const layoutIds = new Set(['hapax', ...s.tracks.map(t => `device:${t.device}`)]);
   return { title: s.title, clock_source: s.clock_source,
     tracks: s.tracks.map(({ number, name, device, port, channel, definition }) => ({ number, name, device, port, channel, definition })),
-    studio_layout: Object.fromEntries(Object.entries(s.studio_layout || {}).filter(([id]) => layoutIds.has(id))) };
+    studio_layout: Object.fromEntries(Object.entries(s.studio_layout || {}).filter(([id]) => layoutIds.has(id))),
+    ...(s.oconfig_workspace ? { oconfig_workspace: s.oconfig_workspace } : {}) };
 }
 
 export function isDirty(category: Selection['category'], a: Setup | Device, b: Setup | Device) {

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   ReactFlow,
   Background,
@@ -9,17 +9,20 @@ import {
   type EdgeTypes,
   type Node,
   useReactFlow,
+  useNodesInitialized,
   ReactFlowProvider,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { useStudioStore } from '../../store/useStudioStore';
 import { InstrumentNode } from '../Nodes/InstrumentNode';
+import { HapaxRearNode } from '../Nodes/HapaxRearNode';
 import { CustomEdge } from './CustomEdge';
 import type { InstrumentPreset, InstrumentNodeData } from '../../types';
+import { EDGE_COLORS } from '../../data/defaultNodes';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ReactFlow NodeTypes variance requires this cast
-const nodeTypes: NodeTypes = { instrument: InstrumentNode as any };
+const nodeTypes: NodeTypes = { instrument: InstrumentNode as any, hapaxRear: HapaxRearNode as any };
 
 const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
@@ -27,7 +30,14 @@ const edgeTypes: EdgeTypes = {
 
 function StudioCanvasInner() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const { screenToFlowPosition } = useReactFlow();
+  const { screenToFlowPosition, fitView } = useReactFlow();
+  const initialized = useNodesInitialized();
+  useEffect(() => {
+    if (!initialized || !reactFlowWrapper.current) return;
+    const observer = new ResizeObserver(() => { void fitView({ padding: 0.12 }); });
+    observer.observe(reactFlowWrapper.current);
+    return () => observer.disconnect();
+  }, [fitView, initialized]);
 
   const {
     nodes,
@@ -123,10 +133,11 @@ function StudioCanvasInner() {
     (event: React.DragEvent) => {
       event.preventDefault();
 
-      const presetData = event.dataTransfer.getData('application/studiograph-preset');
+      const presetData = event.dataTransfer.getData('application/hapax-oconfig-preset');
       if (!presetData) return;
 
-      const preset: InstrumentPreset = JSON.parse(presetData);
+      let preset: InstrumentPreset;
+      try { preset = JSON.parse(presetData); } catch { return; }
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
@@ -161,21 +172,30 @@ function StudioCanvasInner() {
       }
     }
 
-    return edges.map((edge) => ({
+    const hapax = nodes.find(n => n.data.isHapax);
+    const receivers = nodes.filter(n => !n.data.isHapax);
+    const left = Math.min(...receivers.map(n => n.position.x), hapax?.position.x || 0) - 50;
+    const right = Math.max(...receivers.map(n => n.position.x + (n.measured?.width || n.data.width || 260)), (hapax?.position.x || 0) + Math.max(900, hapax?.data.width || 1000)) + 50;
+    return edges.map((edge) => {
+      const target = nodes.find(n => n.id === edge.target);
+      const laterRow = hapax && edge.source === hapax.id && target && target.position.y > hapax.position.y + 550;
+      return ({
       ...edge,
+      style: { stroke: EDGE_COLORS[edge.data?.portType || 'midi'], strokeWidth: 2 },
       data: {
         ...edge.data,
         routingOffset: edgeOffsets.get(edge.id) || 0,
+        ...(laterRow ? { corridorX: target.position.x < (left + right) / 2 ? left : right } : {}),
       },
       className: loopEdges.includes(edge.id) ? 'loop-edge' : '',
-      animated: true,
-    }));
-  }, [edges, loopEdges]);
+      animated: false,
+    }); });
+  }, [edges, loopEdges, nodes]);
 
   return (
-    <div ref={reactFlowWrapper} className="flex-1 h-full">
+    <div ref={reactFlowWrapper} className="oconfig-canvas flex-1 h-full">
       <ReactFlow
-        nodes={nodes as Node[]}
+        nodes={nodes.map(n => ({ ...n, type: n.data.isHapax ? 'hapaxRear' : 'instrument' })) as Node[]}
         edges={styledEdges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
@@ -187,6 +207,8 @@ function StudioCanvasInner() {
         onDrop={onDrop}
         onPaneClick={onPaneClick}
         fitView
+        minZoom={0.1}
+        colorMode="dark"
         snapToGrid
         snapGrid={[15, 15]}
         deleteKeyCode={['Backspace', 'Delete']}
@@ -202,8 +224,7 @@ function StudioCanvasInner() {
       {hasLoop && (
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50">
           <div className="bg-red-900 border border-red-500 text-red-200 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-pulse">
-            <span className="text-xl">Warning</span>
-            <span className="font-semibold">MIDI Feedback Loop Detected!</span>
+            <span className="font-semibold" role="alert">Bucle MIDI detectado · Revisa el retorno o activa Local Off</span>
           </div>
         </div>
       )}

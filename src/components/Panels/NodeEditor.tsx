@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { X, Download } from 'lucide-react';
 import { useStudioStore } from '../../store/useStudioStore';
 import { generateAllDefinitions, downloadFile } from '../../utils/hapaxExport';
@@ -8,8 +8,10 @@ import { PortInfo } from './PortInfo';
 import { AssignCCEditor } from './AssignCCEditor';
 import { AutomationEditor } from './AutomationEditor';
 import { DrumLanesEditor } from './DrumLanesEditor';
+import { InstrumentForm } from '../Sidebar/Sidebar';
 
 export function NodeEditor() {
+  const [portsOpen, setPortsOpen] = useState(false);
   const {
     nodes,
     edges,
@@ -17,6 +19,7 @@ export function NodeEditor() {
     setSelectedNode,
     updateNodeData,
     updateDrumLanes,
+    updateNodePortsAndCleanEdges,
   } = useStudioStore();
 
   const selectedNode = nodes.find((n) => n.id === selectedNodeId);
@@ -114,9 +117,10 @@ export function NodeEditor() {
     <div className="w-80 bg-gray-900 border-l border-gray-700 flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b border-gray-700 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-white">Edit Instrument</h2>
+        <h2 className="text-lg font-semibold text-white">Editar bloque</h2>
         <button
           onClick={handleClose}
+          aria-label="Cerrar edición del bloque"
           className="text-gray-400 hover:text-white transition-colors"
         >
           <X size={20} />
@@ -125,10 +129,22 @@ export function NodeEditor() {
 
       {/* Form */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {!data.isHapax && <><p className="text-xs text-gray-400">{data.trackNumber ? `Vinculado a la pista ${data.trackNumber}.` : 'Equipo añadido al diseño.'} Los parámetros y puertos se conservan en este setup.</p>
+          <button onClick={() => setPortsOpen(!portsOpen)} aria-expanded={portsOpen}>Editar puertos y mapas CC/NRPN</button>
+          {portsOpen && <InstrumentForm key={selectedNodeId} isEditing initialPreset={{ ...data, id: selectedNodeId!, iconId: data.iconId }} onClose={() => setPortsOpen(false)} onSave={preset => {
+            const ids = new Set([...preset.inputs, ...preset.outputs].map(p => p.id));
+            const removed = edges.filter(e => e.source === selectedNodeId && !ids.has(e.sourceHandle || '') || e.target === selectedNodeId && !ids.has(e.targetHandle || ''));
+            if (removed.length && !window.confirm(`El cambio de puertos quitará ${removed.length} cables. ¿Continuar?`)) return;
+            updateNodePortsAndCleanEdges(selectedNodeId!, preset.inputs, preset.outputs);
+            updateNodeData(selectedNodeId!, { name: preset.name, manufacturer: preset.manufacturer, iconId: preset.iconId, ccMap: preset.ccMap || [], nrpnMap: preset.nrpnMap || [] });
+            setPortsOpen(false);
+          }} />}
+        </>}
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">Name</label>
+          <label htmlFor="block-name" className="block text-sm font-medium text-gray-400 mb-1">Nombre</label>
           <input
+            id="block-name"
             type="text"
             value={data.name}
             onChange={handleNameChange}
@@ -143,8 +159,9 @@ export function NodeEditor() {
 
         {/* Manufacturer */}
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">Manufacturer</label>
+          <label htmlFor="block-maker" className="block text-sm font-medium text-gray-400 mb-1">Fabricante</label>
           <input
+            id="block-maker"
             type="text"
             value={data.manufacturer}
             onChange={handleManufacturerChange}
@@ -179,8 +196,9 @@ export function NodeEditor() {
         {/* MIDI Channel - not for Hapax */}
         {!data.isHapax && (
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">MIDI Channel</label>
+            <label htmlFor="block-channel" className="block text-sm font-medium text-gray-400 mb-1">Canal MIDI</label>
             <input
+              id="block-channel"
               type="number"
               min={1}
               max={16}
@@ -197,8 +215,9 @@ export function NodeEditor() {
         {/* Type - not for Hapax */}
         {!data.isHapax && (
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Type</label>
+            <label htmlFor="block-type" className="block text-sm font-medium text-gray-400 mb-1">Tipo</label>
             <select
+              id="block-type"
               value={data.type}
               onChange={handleTypeChange}
               className="
@@ -276,10 +295,10 @@ export function NodeEditor() {
             "
           >
             <Download size={18} />
-            Export Hapax Definition
+            Descargar definición TXT
           </button>
           <p className="text-xs text-gray-500 mt-2 text-center">
-            Must be connected to Hapax MIDI output
+            Conecta el bloque a una salida de Hapax para exportar.
           </p>
         </div>
       )}

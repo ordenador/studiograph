@@ -11,6 +11,7 @@ import { MidiGuideModal } from './MidiGuideModal';
 import { useStudioStore } from '../../store/useStudioStore';
 import { exportStudio, parseStudioImport } from '../../utils/studioExport';
 import { parseCSV } from '../../utils/csvParser';
+import { preservePortIds } from '../../utils/preservePorts';
 import type { InstrumentPreset, InstrumentNodeData, Port, PortType, CCMapping, NRPNMapping } from '../../types';
 
 // Available icons for instruments
@@ -49,11 +50,12 @@ interface InstrumentCardProps {
   isCustom?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
+  onAdd?: () => void;
 }
 
-function InstrumentCard({ preset, isCustom, onEdit, onDelete }: InstrumentCardProps) {
+function InstrumentCard({ preset, isCustom, onEdit, onDelete, onAdd }: InstrumentCardProps) {
   const onDragStart = (event: React.DragEvent) => {
-    event.dataTransfer.setData('application/studiograph-preset', JSON.stringify(preset));
+    event.dataTransfer.setData('application/hapax-oconfig-preset', JSON.stringify(preset));
     event.dataTransfer.effectAllowed = 'move';
   };
 
@@ -80,7 +82,7 @@ function InstrumentCard({ preset, isCustom, onEdit, onDelete }: InstrumentCardPr
         <button
           onClick={(e) => { e.stopPropagation(); onEdit?.(); }}
           className="p-1 text-gray-400 hover:text-blue-400 transition-colors"
-          title="Edit"
+          title="Editar equipo"
         >
           <Edit2 size={12} />
         </button>
@@ -88,7 +90,7 @@ function InstrumentCard({ preset, isCustom, onEdit, onDelete }: InstrumentCardPr
           <button
             onClick={(e) => { e.stopPropagation(); onDelete?.(); }}
             className="p-1 text-gray-400 hover:text-red-400 transition-colors"
-            title="Delete"
+            title="Quitar del catálogo"
           >
             <Trash2 size={12} />
           </button>
@@ -138,6 +140,8 @@ function InstrumentCard({ preset, isCustom, onEdit, onDelete }: InstrumentCardPr
           </span>
         )}
       </div>
+      {!preset.inputs.length && !preset.outputs.length && <p className="text-xs text-gray-400 mt-2">Puertos por definir · Editar equipo</p>}
+      <button className="oconfig-add-equipment" onClick={onAdd} aria-label={`Añadir ${preset.name} al cableado`}><Plus size={14} />Añadir al cableado</button>
     </div>
   );
 }
@@ -149,15 +153,15 @@ interface InstrumentFormProps {
   isEditing?: boolean;
 }
 
-function InstrumentForm({ onClose, onSave, initialPreset, isEditing }: InstrumentFormProps) {
+export function InstrumentForm({ onClose, onSave, initialPreset, isEditing }: InstrumentFormProps) {
   const [name, setName] = useState(initialPreset?.name || '');
   const [manufacturer, setManufacturer] = useState(initialPreset?.manufacturer || '');
   const [iconId, setIconId] = useState(initialPreset?.iconId || 'music');
-  const [midiIn, setMidiIn] = useState(initialPreset?.inputs.filter(p => p.type === 'midi').length || 1);
-  const [midiOut, setMidiOut] = useState(initialPreset?.outputs.filter(p => p.type === 'midi' && !p.id.includes('thru')).length || 1);
+  const [midiIn, setMidiIn] = useState(initialPreset ? initialPreset.inputs.filter(p => p.type === 'midi').length : 1);
+  const [midiOut, setMidiOut] = useState(initialPreset ? initialPreset.outputs.filter(p => p.type === 'midi' && !p.id.includes('thru')).length : 1);
   const [midiThru, setMidiThru] = useState(initialPreset?.outputs.filter(p => p.type === 'midi' && p.id.includes('thru')).length || 0);
-  const [audioIn, setAudioIn] = useState(initialPreset?.inputs.filter(p => p.type === 'audio').length || 2);
-  const [audioOut, setAudioOut] = useState(initialPreset?.outputs.filter(p => p.type === 'audio').length || 2);
+  const [audioIn, setAudioIn] = useState(initialPreset ? initialPreset.inputs.filter(p => p.type === 'audio').length : 2);
+  const [audioOut, setAudioOut] = useState(initialPreset ? initialPreset.outputs.filter(p => p.type === 'audio').length : 2);
   const [cvIn, setCvIn] = useState(initialPreset?.inputs.filter(p => p.type === 'cv').length || 0);
   const [cvOut, setCvOut] = useState(initialPreset?.outputs.filter(p => p.type === 'cv').length || 0);
   const [usbCount, setUsbCount] = useState(
@@ -301,8 +305,8 @@ function InstrumentForm({ onClose, onSave, initialPreset, isEditing }: Instrumen
       manufacturer,
       type: initialPreset?.type || 'POLY',
       isRemovable: true,
-      inputs,
-      outputs,
+      inputs: initialPreset ? preservePortIds(initialPreset.inputs, inputs) : inputs,
+      outputs: initialPreset ? preservePortIds(initialPreset.outputs, outputs) : outputs,
       iconId,
       ccMap: ccMap.length > 0 ? ccMap : undefined,
       nrpnMap: nrpnMap.length > 0 ? nrpnMap : undefined,
@@ -557,13 +561,13 @@ function InstrumentForm({ onClose, onSave, initialPreset, isEditing }: Instrumen
   );
 }
 
-export function Sidebar() {
+export function EquipmentLibrary({ presets = [] }: { presets?: InstrumentPreset[] }) {
   const [showNewForm, setShowNewForm] = useState(false);
   const [showMidiGuide, setShowMidiGuide] = useState(false);
   const [editingPreset, setEditingPreset] = useState<InstrumentPreset | null>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
 
-  const { nodes, edges, customPresets, setCustomPresets, importStudio, updateNodePortsAndCleanEdges, updateNodeData, uploadCCMap, clearCCMap, clearStudio } = useStudioStore();
+  const { nodes, edges, customPresets, setCustomPresets, importStudio, updateNodePortsAndCleanEdges, updateNodeData, uploadCCMap, clearCCMap, clearStudio, addNode } = useStudioStore();
 
   const handleExport = useCallback(() => {
     exportStudio(nodes, edges, customPresets);
@@ -572,11 +576,12 @@ export function Sidebar() {
   const handleImport = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!window.confirm('¿Reemplazar el diseño de cableado por este respaldo? Puedes deshacerlo antes de guardar en el repo.')) { e.target.value = ''; return; }
 
     try {
       const data = await parseStudioImport(file);
       importStudio(data.nodes, data.edges, data.customPresets);
-      alert(`Imported ${data.nodes.length} instruments and ${data.customPresets.length} presets.`);
+      alert(`Recuperados ${data.nodes.length} bloques y ${data.customPresets.length} equipos. Guarda en el repo para conservarlos en este setup.`);
     } catch (error) {
       alert(`Import failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -589,6 +594,7 @@ export function Sidebar() {
 
   const handleAddCustomPreset = (preset: InstrumentPreset) => {
     setCustomPresets([...customPresets, preset]);
+    setShowNewForm(false);
   };
 
   const handleAddFromMidiGuide = useCallback((data: {
@@ -673,7 +679,7 @@ export function Sidebar() {
       }
     }
 
-    setCustomPresets(customPresets.map(p => p.id === preset.id ? preset : p));
+    setCustomPresets(customPresets.some(p => p.id === preset.id) ? customPresets.map(p => p.id === preset.id ? preset : p) : [...customPresets, preset]);
     setEditingPreset(null);
   };
 
@@ -684,19 +690,17 @@ export function Sidebar() {
   };
 
   return (
-    <div className="w-64 bg-gray-900 border-r border-gray-700 flex flex-col h-full">
+    <aside className="oconfig-equipment-library w-64 bg-gray-900 border-r border-gray-700 flex flex-col h-full" aria-label="Equipos para el cableado">
       {/* Header */}
       <div className="p-4 border-b border-gray-700">
-        <div className="flex items-center gap-2">
-          <img src="/oconfig.svg" width="32" height="32" alt="" className="shrink-0" />
-          <h1 className="text-lg font-bold text-white">Hapax Oconfig</h1>
-        </div>
-        <p className="text-xs text-gray-400 mt-1">Drag instruments onto the canvas</p>
+        <h2>Equipos para el cableado</h2>
+        <p className="text-xs text-gray-400 mt-1">Añade un equipo o arrástralo al plano.</p>
         <div className="flex justify-end gap-1 mt-3">
           <button
             onClick={handleExport}
             className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
-            title="Save Studio"
+            title="Descargar respaldo JSON"
+            aria-label="Descargar respaldo JSON"
           >
             <Save size={16} />
           </button>
@@ -710,18 +714,20 @@ export function Sidebar() {
           <button
             onClick={() => importInputRef.current?.click()}
             className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
-            title="Load Studio"
+            title="Recuperar respaldo JSON"
+            aria-label="Recuperar respaldo JSON"
           >
             <FolderOpen size={16} />
           </button>
           <button
             onClick={() => {
-              if (window.confirm('Start over? This will clear all instruments and connections.')) {
+              if (window.confirm('¿Vaciar este diseño de cableado? Las pistas del setup siguen disponibles. Puedes deshacer antes de guardar.')) {
                 clearStudio();
               }
             }}
             className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
-            title="Clear Canvas"
+            title="Vaciar diseño"
+            aria-label="Vaciar diseño"
           >
             <RotateCcw size={16} />
           </button>
@@ -735,14 +741,14 @@ export function Sidebar() {
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors"
         >
           <Globe size={16} />
-          Browse midi.guide
+          Buscar en midi.guide
         </button>
         <button
           onClick={() => { setShowNewForm(!showNewForm); setEditingPreset(null); }}
           className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors"
         >
           <Plus size={16} />
-          Add Custom Instrument
+          Crear equipo
         </button>
       </div>
 
@@ -765,10 +771,12 @@ export function Sidebar() {
         )}
 
         {/* Custom Instruments */}
+        {presets.filter(p => !customPresets.some(c => c.id === p.id)).map(preset => <InstrumentCard key={preset.id} preset={preset}
+          onEdit={() => handleEditPreset(preset)} onAdd={() => addNode(preset, { x: 650, y: nodes.length * 120 })} />)}
         {customPresets.length > 0 && (
           <>
             <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-              Custom
+              Personalizados
             </h2>
             {customPresets.map((preset) => (
               <InstrumentCard
@@ -777,23 +785,24 @@ export function Sidebar() {
                 isCustom
                 onEdit={() => handleEditPreset(preset)}
                 onDelete={() => handleDeletePreset(preset.id)}
+                onAdd={() => addNode(preset, { x: 650, y: nodes.length * 120 })}
               />
             ))}
           </>
         )}
 
         {/* Empty state when no instruments */}
-        {customPresets.length === 0 && (
+        {customPresets.length === 0 && presets.length === 0 && (
           <div className="text-center py-8 text-gray-500">
-            <p className="text-sm">No instruments yet</p>
-            <p className="text-xs mt-1">Browse midi.guide or add a custom instrument</p>
+            <p className="text-sm">Todavía no hay equipos</p>
+            <p className="text-xs mt-1">Busca en midi.guide o crea un equipo.</p>
           </div>
         )}
       </div>
 
       {/* Legend */}
       <div className="px-4 py-3 border-t border-gray-700">
-        <h3 className="text-xs font-semibold text-gray-500 mb-2">Connection Colors</h3>
+        <h3 className="text-xs font-semibold text-gray-500 mb-2">Tipos de cable</h3>
         <div className="grid grid-cols-2 gap-2 text-[10px]">
           <div className="flex items-center gap-1">
             <span className="w-3 h-0.5 bg-blue-500"></span>
@@ -820,6 +829,6 @@ export function Sidebar() {
         onClose={() => setShowMidiGuide(false)}
         onAddInstrument={handleAddFromMidiGuide}
       />
-    </div>
+    </aside>
   );
 }

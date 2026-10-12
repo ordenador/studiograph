@@ -1,235 +1,81 @@
 # Hapax Oconfig
 
-Nuestra app para mantener equipos, setups y routing de Hapax. Basada en [StudioGraph de turnerm5](https://github.com/turnerm5/studiograph), conservando su historial y autoría.
+Editor local de equipos, setups, cableado y definiciones de instrumento para Hapax.
+Basado en [StudioGraph de turnerm5](https://github.com/turnerm5/studiograph),
+conservando historial y autoría. Todo se trabaja desde la misma aplicación.
 
-El logo propio combina una O de ocho pads con una marca de configuración lista.
-Los colores se inspiran en los pads de Hapax; no son una paleta oficial de Squarp.
-El archivo maestro [public/oconfig.svg](public/oconfig.svg) tiene fondo transparente
-y se usa en la app y el favicon. [public/oconfig.png](public/oconfig.png) es su
-versión transparente de 512 × 512 px. Mantener el SVG como fuente al crear variantes.
+## Arrancar
 
-A visual MIDI studio designer for planning instrument routing, managing CC/NRPN definitions, and exporting synthesizer configurations for the Squarp Hapax sequencer.
+Desde el repositorio contenedor [ordenador/hapax](https://github.com/ordenador/hapax):
 
-## Mario's Hapax workspace
-
-This fork opens the devices and setups maintained in
-[ordenador/hapax](https://github.com/ordenador/hapax), with direct repository
-saving and a visual home page: Hapax → named output → physical equipment.
-Expand a device to inspect its parts and open a track directly. Track controls
-open one row at a time; rear/top Hapax vector views and a free-layout canvas
-remain available in the setup editor. Start from the parent repository with `make oconfig-setup`
-and `make oconfig-dev`. See [REPOSITORY-MODE.md](REPOSITORY-MODE.md).
-
-Use **Copiar enlace** to share the selected setup, tab, track or inspected port.
-For example, `/?setup=felucca-duo&tab=hapax` opens that setup's rear panel. The
-panel shows output-to-device routes from its configured tracks; unassigned
-outputs stay explicit. Links restore the view and use saved repository data.
-
-The previous independent editor remains at `/standalone`; it can run with
-`npm ci` and `npm run dev` without the repository API. Its JSON workflows do
-not save canonical Hapax metadata. Original history and authorship are retained.
-
-## Features
-
-- **Visual routing canvas** — drag-and-drop instruments onto a node graph and connect MIDI, audio, CV, and USB ports with type-safe wiring
-- **Loop detection** — real-time DFS-based cycle detection warns about MIDI feedback loops, with support for intentional Local Off breaks
-- **midi.guide integration** — browse and import CC/NRPN definitions from the [midi.guide](https://midi.guide) database directly into your instruments
-- **Hapax export** — generate `.txt` synth definition files with DRUMLANES, PC, CC, NRPN, ASSIGN, and AUTOMATION sections ready for your Hapax
-- **Studio save/load** — export and import your entire studio layout as JSON
-- **Preset instruments** — ships with preconfigured Hapax, Digitakt II, Digitone II, and more
-
-## Getting Started
-
-```bash
-npm install
-npm run dev
+```sh
+make oconfig-setup
+make oconfig-dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) to start designing your studio.
+Abrir [Hapax Oconfig](http://127.0.0.1:8795/). La API local se inicia junto con la
+app. Dentro de este submódulo, `npm run dev` requiere esa API ya disponible.
+`make oconfig-check` ejecuta tests, lint y build con el lock del fork.
 
-## Scripts
+## Trabajar con un setup
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server with hot reload |
-| `npm run build` | Type-check and build for production |
-| `npm run lint` | Run ESLint |
-| `npm run preview` | Preview production build |
-| `npm run test` | Run tests once (Vitest) |
-| `npm run test:watch` | Run tests in watch mode |
+**Inicio** permite elegir un setup y seguir Hapax → salida → equipo físico.
+Abrir un equipo muestra sus partes y permite saltar a una pista. En el editor:
 
-## Internal Data Model
+- **Conexiones**: recorrido ordenado hacia cada equipo.
+- **Pistas**: nombres, equipo, salida, canal y definición compartida.
+- **Panel Hapax**: referencia superior/trasera y salidas configuradas.
+- **Cableado libre**: edición completa del diseño y sus parámetros.
+- **Ajustes**: nombre, clock y estado registrado del setup.
 
-All application state lives in a single Zustand store (`src/store/useStudioStore.ts`). The store holds two primary collections — **nodes** and **edges** — which together form the studio routing graph.
+**Guardar en repo** o Cmd/Ctrl+S conserva el borrador. **Deshacer** recupera el
+último cambio; **Recargar** vuelve a la ficha del repo. El guardado comprueba
+revisiones, crea un respaldo local y conserva comentarios/campos desconocidos.
+**Copiar enlace** comparte setup, pestaña, pista o conector inspeccionado;
+por ejemplo `/?setup=studio&tab=canvas`. Los enlaces usan los datos guardados.
 
-### Nodes (`Node<InstrumentNodeData>[]`)
+## Cableado y parámetros
 
-Each instrument on the canvas is a ReactFlow `Node` whose `data` payload is an `InstrumentNodeData` object:
+El panel trasero vectorial de Hapax es el origen del diagrama. Las pistas se
+ordenan en filas cortas y las conexiones de filas posteriores pasan por los
+márgenes. Se puede arrastrar, ampliar o mover los bloques. **Ordenar cableado**
+reorganiza un diseño guardado sin alterar mapas ni cables y permite deshacer.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | `string` | Instrument display name |
-| `manufacturer` | `string` | Manufacturer name |
-| `channel` | `number` | MIDI channel (1–16) |
-| `type` | `'POLY' \| 'DRUM' \| 'MPE'` | Hapax track type |
-| `inputs` | `Port[]` | Input port definitions |
-| `outputs` | `Port[]` | Output port definitions |
-| `ccMap` | `CCMapping[]` | CC parameter mappings |
-| `nrpnMap` | `NRPNMapping[]` | NRPN parameter mappings |
-| `assignCCs` | `AssignCC[]` | Up to 8 Hapax ASSIGN slots |
-| `automationLanes` | `AutomationLane[]` | Up to 64 automation lane configs |
-| `drumLanes` | `DrumLane[]` (optional) | Drum pad → note/channel mappings (DRUM type only) |
-| `isHapax` | `boolean` (optional) | Marks the central Hapax sequencer node |
-| `isRemovable` | `boolean` (optional) | `false` prevents deletion (Hapax node) |
-| `width` | `number` (optional) | User-set node width from resize handle |
-| `iconId` | `string` (optional) | Icon key into the icon map (e.g. `'drum'`, `'piano'`) |
-| `localOff` | `boolean` (optional) | Breaks feedback loops in cycle detection |
-| `presetId` | `string` (optional) | Links canvas node back to its sidebar preset for edit propagation |
-| `showCVPorts` | `boolean` (optional) | Toggles CV/Gate port visibility on the Hapax node |
+**Equipos y catálogo** incorpora equipos del repo y equipos personalizados,
+reutilizables desde otros setups guardados. Permite editar nombres, iconos y
+puertos MIDI, audio, CV y USB; cargar CSV y buscar mapas en midi.guide. Los
+puertos que el repo no describe quedan por definir. Arrastra o usa Añadir al
+cableado; después une puntos de conexión del mismo tipo.
 
-Node IDs follow the pattern `hapax-main` for the fixed Hapax node and `node-{counter}` for user-added instruments. The counter is a monotonically increasing integer tracked in module scope.
+Seleccionar un bloque abre puertos/mapas CC/NRPN, canal, POLY/DRUM/MPE,
+Local Off, ocho ASSIGN, hasta 64 automatizaciones CC/PB/AT/CV/NRPN y DRUMLANES.
+Los bucles MIDI se señalan; Local Off permite declarar la interrupción del
+retorno. Un bloque representa una pista: varias partes pueden pertenecer a una
+misma unidad física.
 
-### Ports
+**Aplicar a pistas** copia salidas y canales de los bloques vinculados; rechaza
+salidas ambiguas. El diseño se guarda completo en `oconfig_workspace` dentro
+del setup TOML. Si cambian las pistas, aparece un aviso: reconstruir desde
+ellas requiere una acción explícita. Dibujar cables no modifica dispositivos.
 
-Each node has `inputs` and `outputs` arrays of `Port` objects:
+**Descargar definiciones TXT** genera los instrumentos conectados a Hapax,
+incluidas rutas a través de MIDI Thru. Las fuentes existentes conservan PC,
+INPORT/MAXRATE, comentarios, opciones desconocidas y profundidad NRPN 14-bit.
+Los archivos compartidos de HAPAX/ permanecen intactos; los mapas editados viven
+en el diseño. Una definición TXT o un JSON no es un save nativo de Hapax.
 
-```ts
-{ id: string, label: string, type: 'midi' | 'audio' | 'cv' | 'usb' }
-```
+## Respaldo y mantenimiento
 
-Port IDs are used as ReactFlow handle IDs (e.g. `midi-a`, `midi-in`, `audio-out-1`, `usb-device`). Connections are type-validated — a MIDI output can only connect to a MIDI input, USB to USB, etc.
+JSON es opcional para descargar o recuperar un diseño compatible. También se
+puede recuperar explícitamente el diseño anterior guardado en el navegador;
+ese almacenamiento se conserva. Los enlaces antiguos abren la app integrada.
 
-### Edges (`StudioEdge[]`)
+El SVG transparente del logo está en `public/oconfig.svg` y su PNG en
+`public/oconfig.png`. Sus colores se inspiran en los pads de Hapax, sin presentar
+el logo como una marca oficial de Squarp.
 
-Edges extend ReactFlow's `Edge` with port type metadata:
-
-```ts
-{ id, source, target, sourceHandle, targetHandle, data: { portType: 'midi' | 'audio' | 'cv' | 'usb', routingOffset?: number } }
-```
-
-Edge IDs encode the full connection: `edge-{sourceNodeId}-{sourceHandle}-{targetNodeId}-{targetHandle}`. Edge colors are determined by port type (blue for MIDI, red for audio, yellow for CV, cyan for USB). The optional `routingOffset` adjusts parallel edge spacing.
-
-### CC Mappings
-
-Each `CCMapping` stores a single MIDI CC parameter definition:
-
-```ts
-{ ccNumber: number, paramName: string, fullParamName?: string, section?: string, defaultValue?: number }
-```
-
-`paramName` is truncated to 12 characters (Hapax display limit). `fullParamName` preserves the original untruncated name for the UI. `section` groups parameters under headings in the Hapax export.
-
-### NRPN Mappings
-
-```ts
-{ msb: number, lsb: number, paramName: string, section?: string, defaultValue?: number }
-```
-
-Exported as `{msb}:{lsb}:7 {paramName}` in the Hapax definition format (7-bit depth default).
-
-### ASSIGN CCs
-
-Up to 8 slots mapping CC numbers to the Hapax's ASSIGN encoders:
-
-```ts
-{ slot: number, ccNumber: number, paramName: string, defaultValue: number }
-```
-
-### Automation Lanes
-
-Up to 64 lanes, each with a type discriminator:
-
-```ts
-{ slot: number, type: 'CC' | 'PB' | 'AT' | 'CV' | 'NRPN', ccNumber?, cvNumber?, nrpnMsb?, nrpnLsb?, nrpnDepth?, paramName? }
-```
-
-Exported as `CC:74`, `PB:`, `AT:`, `CV:2`, or `NRPN:0:42:7` depending on type.
-
-### Drum Lanes
-
-For `DRUM` type instruments, each lane maps a row to a trigger/channel/note:
-
-```ts
-{ lane: number, trig: number | null, chan: string | null, note: number | null, name: string }
-```
-
-`chan` accepts MIDI channels (`"1"`–`"16"`), Hapax groups (`"G1"`–`"G4"`), CV outputs (`"CV1"`–`"CV4"`), or CV groups (`"CVG1"`–`"CVG4"`). Exported as `{row}:{trig}:{chan}:{note} {name}` with nulls becoming `NULL`.
-
-### Loop Detection State
-
-The store tracks `hasLoop: boolean` and `loopEdges: string[]`. These are recomputed via DFS (`src/utils/loopDetection.ts`) whenever edges change. Nodes with `localOff: true` break cycles — the algorithm skips outgoing edges from those nodes.
-
----
-
-## Serialization Formats
-
-### Studio Export (JSON)
-
-The full studio layout is saved/loaded as a versioned JSON file:
-
-```json
-{
-  "version": 1,
-  "exportedAt": "2026-02-27T...",
-  "nodes": [ ... ],
-  "edges": [ ... ],
-  "customPresets": [ ... ]
-}
-```
-
-On import, older files are migrated: missing `automationLanes` arrays are backfilled, legacy `DrumLane` objects (which used a `channel` field instead of `trig`/`chan`) are converted to the current schema, and USB port IDs are renamed to the current convention (`usb-in`/`usb-out` → `usb-device`/`usb-host`).
-
-### Hapax Export (`.txt`)
-
-Each instrument connected to a Hapax output generates a Hapax synth definition file. The connection's source handle determines `OUTPORT` (`midi-a`→A, `midi-b`→B, `midi-c`→C, `midi-d`→D, `usb-host`→USBH, `usb-device`→USBD, `cv-1`→CV1 through `cv-4`→CV4, `gate-1`→G1 through `gate-4`→G4). File structure:
-
-```
-############# MANUFACTURER NAME #############
-VERSION 1
-TRACKNAME <name, max 12 chars, no spaces>
-TYPE <POLY|DRUM|MPE>
-OUTPORT <A|B|C|D|USBH|USBD|CV1-4|G1-4>
-OUTCHAN <1-16>
-
-[DRUMLANES]
-<row>:<trig>:<chan>:<note> <name>
-[/DRUMLANES]
-
-[PC]
-[/PC]
-
-[CC]
-# <section>
-<ccNumber> <paramName>
-[/CC]
-
-[NRPN]
-<msb>:<lsb>:7 <paramName>
-[/NRPN]
-
-[ASSIGN]
-<ccNumber> <paramName> <defaultValue>
-[/ASSIGN]
-
-[AUTOMATION]
-<type>:<value>
-[/AUTOMATION]
-
-[COMMENT]
-<manufacturer> <name>
-Generated by Hapax Oconfig
-[/COMMENT]
-```
-
----
-
-## Built With
-
-- [React](https://react.dev) + TypeScript
-- [ReactFlow](https://reactflow.dev) — node-graph canvas
-- [Zustand](https://zustand.docs.pmnd.rs) — state management
-- [Tailwind CSS](https://tailwindcss.com) — styling
-- [Vite](https://vite.dev) — build tooling
-- [Vitest](https://vitest.dev) — unit testing
-- [PapaParse](https://www.papaparse.com) — CSV parsing for MIDI specs
-- [Lucide React](https://lucide.dev) — icon library
+[REPOSITORY-MODE.md](REPOSITORY-MODE.md) documenta datos, guardado y límites.
+El repo contenedor describe [mantenimiento del fork](../../docs/studiograph-fork.md)
+y [UX](../../docs/studiograph-ux.md). La app no hace commit/push, escribe SD,
+usa MIDI/USB ni flashea firmware. El fork mantiene la procedencia original;
+el baseline upstream no declara licencia explícita.

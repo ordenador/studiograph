@@ -1,4 +1,4 @@
-import { BaseEdge, type EdgeProps } from '@xyflow/react';
+import { BaseEdge, getBezierPath, type EdgeProps } from '@xyflow/react';
 
 export function CustomEdge({
   id,
@@ -9,30 +9,15 @@ export function CustomEdge({
   style,
   markerEnd,
   selected,
+  sourcePosition,
+  targetPosition,
   data,
 }: EdgeProps) {
-  const routingOffset = (data as { routingOffset?: number })?.routingOffset ?? 0;
-
-  // Minimum distance to travel up before going horizontal (since handles are on top)
-  const minVerticalDistance = 25;
-
-  // Calculate the Y position for the horizontal segment
-  const minY = Math.min(sourceY, targetY);
-  const baseHorizontalY = minY - minVerticalDistance;
-
-  // Each edge gets a different vertical level based on its computed offset
-  const adjustedHorizontalY = baseHorizontalY - routingOffset;
-
-  // Small horizontal nudge when source and target are nearly vertical
-  // to prevent overlapping vertical segments
-  const dx = targetX - sourceX;
-  const nudge = Math.abs(dx) < 50 ? routingOffset * 0.4 : 0;
-
-  // Create path: up from source, horizontal, down to target
-  const edgePath = `M ${sourceX} ${sourceY}
-    L ${sourceX} ${adjustedHorizontalY}
-    L ${targetX + nudge} ${adjustedHorizontalY}
-    L ${targetX + nudge} ${targetY}`;
+  const routing = data as { corridorX?: number; routingOffset?: number } | undefined;
+  const [curvedPath] = getBezierPath({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, curvature: 0.3 });
+  const offset = routing?.routingOffset || 0;
+  const edgePath = routing?.corridorX !== undefined
+    ? `M${sourceX} ${sourceY} V${sourceY + 45 + offset} H${routing.corridorX} V${targetY - 55} H${targetX} V${targetY}` : curvedPath;
 
   // Apply selected styling
   const selectedStyle = selected

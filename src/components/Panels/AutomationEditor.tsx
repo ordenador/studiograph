@@ -124,6 +124,7 @@ export function AutomationEditor({ nodeId, automationLanes, ccMap, nrpnMap }: Au
         <h3 className="text-sm font-semibold text-gray-400">AUTOMATION Lanes (1-64)</h3>
         {automationLanes.length < 64 && !showForm && (
           <button
+            aria-label="Añadir automatización"
             onClick={() => {
               setEditingSlot(null);
               setNewLane({ type: 'CC', ccNumber: 0, cvNumber: 1, nrpnMsb: 0, nrpnLsb: 0, nrpnDepth: 7, paramName: '' });

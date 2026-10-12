@@ -1,10 +1,9 @@
-import { lazy, Suspense } from 'react';
 import { RepositoryWorkspace } from './components/Repository/RepositoryWorkspace';
 
-const StandaloneEditor = lazy(() => import('./StandaloneEditor'));
-
 export default function App() {
-  return window.location.pathname === '/standalone'
-    ? <Suspense fallback={<p style={{ padding: 24 }}>Abriendo editor independiente…</p>}><StandaloneEditor /></Suspense>
-    : <RepositoryWorkspace />;
+  // Old bookmarks open the integrated capability; there is only one workspace.
+  if (window.location.pathname !== '/') {
+    window.history.replaceState(null, '', `/${window.location.search || '?setup=studio&tab=canvas'}`);
+  }
+  return <RepositoryWorkspace />;
 }

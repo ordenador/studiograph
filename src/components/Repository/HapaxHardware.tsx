@@ -9,6 +9,8 @@ type HapaxHardwareProps = {
   selectedPort?: string;
   routes?: PanelRoute[];
   onPortClick?: (port: string) => void;
+  patchbay?: boolean;
+  patchInputs?: number[];
 };
 
 function portActive(port: string | undefined, activePorts: string[]): boolean {
@@ -43,13 +45,13 @@ function ConnectorShape({ kind, color }: { kind: Connector['kind']; color: strin
 }
 
 /** Original vector reference of Hapax. Active means configured in the setup, not live MIDI. */
-export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, compact = false, selectedPort = '', routes = [] }: HapaxHardwareProps) {
+export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, compact = false, selectedPort = '', routes = [], patchbay = false, patchInputs = [] }: HapaxHardwareProps) {
   const id = React.useId();
   const [focusedPort, setFocusedPort] = useState<string | null>(null);
   const titleId = `${id}-title`;
   const descriptionId = `${id}-description`;
   const routeRows = Math.ceil(routes.length / 5);
-  const rearHeight = routes.length ? 410 + (routeRows - 1) * 120 : 235;
+  const rearHeight = patchbay ? 190 : routes.length ? 410 + (routeRows - 1) * 120 : 235;
 
   if (view === 'top') {
     const button = (x: number, y: number, label: string, color = '#111113', width = 30) => <g key={`${x}-${y}`}>
@@ -94,7 +96,7 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
   return <div style={{ overflowX: 'auto' }}>
     <svg viewBox={`0 0 1000 ${rearHeight}`} fontFamily="system-ui, sans-serif" style={{ display: 'block', width: '100%', minWidth: 900 }} role="group" aria-labelledby={`${titleId} ${descriptionId}`}>
       <title id={titleId}>Hapax · panel trasero, mirando los conectores</title>
-      <desc id={descriptionId}>Referencia del panel trasero. Las salidas configuradas se distinguen por un borde de color y una marca. {onPortClick ? 'Activa una salida con clic, Enter o espacio para seleccionarla en el editor.' : 'Las entradas, alimentación, SD y pedal se muestran como referencia.'} No indica conexión física ni actividad MIDI.</desc>
+      <desc id={descriptionId}>Referencia del panel trasero. {patchbay ? 'Las salidas del diseño tienen color. Los puntos inferiores permiten dibujar cables y los superiores recibir retornos.' : 'Las salidas configuradas se distinguen por un borde de color y una marca.'} {onPortClick ? 'Activa una salida con clic, Enter o espacio para seleccionarla en el editor.' : 'Las entradas, alimentación, SD y pedal se muestran como referencia.'} No indica conexión física ni actividad MIDI.</desc>
       <text x="24" y="27" fill="#e4e4e7" fontSize="15">Panel trasero · mirando los conectores</text>
       <rect x="18" y="64" width="946" height="106" rx="4" fill="#27272a" stroke="#71717a" />
       {[[34, 75], [948, 75], [34, 158], [948, 158]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="2" fill="#09090b" />)}
@@ -108,6 +110,10 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
       <circle cx="244" cy="107" r="10" fill="#09090b" stroke="#71717a" /><circle cx="244" cy="107" r="6" fill="#27272a" />
       <text x="244" y="149" textAnchor="middle" fill="#d4d4d8" fontSize="11">Switch</text>
       {[{ x: 125, text: 'USB ↔' }, { x: 337, text: 'Gate out' }, { x: 477, text: 'CV out' }, { x: 585, text: 'CV in' }, { x: 724, text: 'MIDI out' }, { x: 884, text: 'MIDI in' }].map(({ x, text }) => <text key={text} x={x} y="86" textAnchor="middle" fill="#d4d4d8" fontSize="11">{text}</text>)}
+      {patchbay && <g aria-hidden="true">
+        {CONNECTORS.filter(c => c.port).map(c => <path key={c.name} d={`M${c.x} 155V190`} stroke={portActive(c.port, activePorts) ? connectorColor(c.port) : '#52525b'} strokeWidth="2" />)}
+        {patchInputs.map(x => <path key={x} d={`M${x} 0V63`} stroke="#52525b" strokeWidth="1" />)}
+      </g>}
       {CONNECTORS.map((connector) => {
         const active = portActive(connector.port, activePorts);
         const focused = focusedPort === connector.port || portActive(connector.port, [selectedPort]);
@@ -118,7 +124,7 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
           transform={`translate(${connector.x} 111)`}
           role={interactive ? 'button' : undefined}
           tabIndex={interactive ? 0 : undefined}
-          aria-label={`${connector.name}${active ? ' · configurado en el setup' : ''}`}
+          aria-label={`${connector.name}${active ? patchbay ? ' · conectado en el diseño' : ' · configurado en el setup' : ''}`}
           data-port={connector.port}
           onClick={interactive ? () => onPortClick?.(connector.port!) : undefined}
           onKeyDown={interactive ? (event) => {
@@ -146,7 +152,7 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
         const y = 280 + row * 120;
         const color = connectorColor(route.port);
         return <g key={`${route.port}:${route.device}`} role="img" aria-label={`${route.title} · ${route.label}`}>
-          <title>{route.title} · {route.label} · pistas {route.tracks.map(t => t.number).join(', ')}</title>
+          <title>{`${route.title} · ${route.label} · pistas ${route.tracks.map(t => t.number).join(', ')}`}</title>
           {route.sources.map(source => <g key={source}>
             <circle cx={source} cy="173" r="3" fill={color} />
             <path data-route={route.port} d={`M${source} 173 C${source} ${210 + row * 20},${x} ${y - 40},${x} ${y}`} fill="none" stroke={color} strokeWidth="2" />
@@ -159,8 +165,8 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
           </foreignObject>
         </g>;
       })}
-      <text x="24" y={rearHeight - 36} fill="#a1a1aa" fontSize="12">Marca de color = salida configurada en el setup</text>
-      <text x="24" y={rearHeight - 14} fill="#a1a1aa" fontSize="12">Referencia de conectores · no acredita cableado físico ni actividad MIDI</text>
+      {!patchbay && <><text x="24" y={rearHeight - 36} fill="#a1a1aa" fontSize="12">Marca de color = salida configurada en el setup</text>
+      <text x="24" y={rearHeight - 14} fill="#a1a1aa" fontSize="12">Referencia de conectores · no acredita cableado físico ni actividad MIDI</text></>}
     </svg>
   </div>;
 }

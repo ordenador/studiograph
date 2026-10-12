@@ -22,6 +22,7 @@ export interface NRPNMapping {
   paramName: string;
   section?: string;
   defaultValue?: number;
+  depth?: 7 | 14;
 }
 
 export type InstrumentType = 'POLY' | 'DRUM' | 'MPE';
@@ -73,6 +74,8 @@ export interface InstrumentNodeData extends Record<string, unknown> {
   localOff?: boolean; // Local Off prevents MIDI feedback loops
   presetId?: string; // Links canvas node to sidebar preset for edit propagation
   showCVPorts?: boolean; // Toggle visibility of CV/Gate ports (for Hapax)
+  sourceDefinition?: string;
+  trackNumber?: number;
 }
 
 export type InstrumentNode = Node<InstrumentNodeData>;

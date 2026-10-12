@@ -196,12 +196,13 @@ export const useStudioStore = create<StudioState>()(
     set((state) => {
       let newNodes = [...state.nodes];
       for (const change of changes) {
-        if (change.type === 'position' && change.position) {
+        if (change.type === 'position') {
           const nodeIndex = newNodes.findIndex((n) => n.id === change.id);
           if (nodeIndex !== -1) {
             newNodes[nodeIndex] = {
               ...newNodes[nodeIndex],
-              position: change.position,
+              position: change.position || newNodes[nodeIndex].position,
+              ...(change.dragging !== undefined ? { dragging: change.dragging } : {}),
             };
           }
         } else if (change.type === 'dimensions' && change.dimensions) {
@@ -395,7 +396,7 @@ export const useStudioStore = create<StudioState>()(
   },
 }),
     {
-      name: 'studiograph-studio',
+      name: 'hapax-oconfig-workbench',
       partialize: (state) => ({
         nodes: state.nodes,
         edges: state.edges,

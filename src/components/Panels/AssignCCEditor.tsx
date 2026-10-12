@@ -98,6 +98,7 @@ export function AssignCCEditor({ nodeId, assignCCs, ccMap }: AssignCCEditorProps
         <h3 className="text-sm font-semibold text-gray-400">ASSIGN Parameters (1-8)</h3>
         {assignCCs.length < 8 && !showForm && (
           <button
+            aria-label="Añadir ASSIGN"
             onClick={() => {
               setEditingSlot(null);
               setNewAssignCC({ ccNumber: 1, paramName: '', defaultValue: 64 });

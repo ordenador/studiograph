@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Save, RefreshCw, Undo2, Plus, X, Home, ChevronDown, ChevronUp } from 'lucide-react';
 import { HapaxHardware } from './HapaxHardware';
-import { RepositoryDiagram } from './RepositoryDiagram';
 import { RepositoryHome } from './RepositoryHome';
 import { RoutingMap } from './RoutingMap';
 import { CopyViewLink } from './CopyViewLink';
@@ -11,6 +10,8 @@ import { panelRoutes } from './hardwareRouting';
 import { changes, isDirty, portLabel, request, routeWarnings, stateLabel,
   type Device, type Envelope, type Library, type Selection, type Setup, type Track } from './repository';
 import './repository.css';
+
+const RepositoryCableEditor = lazy(() => import('./RepositoryCableEditor').then(module => ({ default: module.RepositoryCableEditor })));
 
 function Dialog({ children, title, onClose, className = '' }: { children: React.ReactNode; title: string; onClose: () => void; className?: string }) {
   const panel = useRef<HTMLElement>(null);
@@ -162,16 +163,16 @@ function Editor({ selection, library, location, onNavigate, onSaved, onDirty }: 
       <button className="repo-primary" disabled={!dirty || busy} onClick={() => void save()}><Save size={16} />Guardar en repo</button>
     </div></header>
     {error && <div role="alert" className="repo-error">{error}</div>}
-    <fieldset disabled={busy} className="repo-edit-area">{device && metadata}
+    <fieldset disabled={busy} inert={busy} className="repo-edit-area">{device && metadata}
     {setup && <>
       <nav className="repo-tabs" aria-label="Vista del setup">{(['overview', 'tracks', 'hardware', 'diagram', 'settings'] as const).map(v => <button key={v} aria-pressed={view === v} onClick={() => onNavigate({ ...location, view: v })}>
-        {{ overview: 'Conexiones', tracks: 'Pistas', diagram: 'Canvas libre', hardware: 'Panel Hapax', settings: 'Ajustes' }[v]}</button>)}<span>{setup.tracks.length} / 16 pistas</span>
+        {{ overview: 'Conexiones', tracks: 'Pistas', diagram: 'Cableado libre', hardware: 'Panel Hapax', settings: 'Ajustes' }[v]}</button>)}<span>{setup.tracks.length} / 16 pistas</span>
         {view === 'tracks' && <button className="repo-add" disabled={setup.tracks.length >= 16 || busy} onClick={addTrack}><Plus size={16} />Añadir pista</button>}
       </nav>
       {view === 'settings' && metadata}
       {view === 'overview' && <RoutingMap setup={setup} devices={library.devices} onEditTrack={number => onNavigate({ ...location, track: number, view: 'tracks' })} />}
       {view === 'tracks' && <>{focusedTrack > 0 && !setup.tracks.some(t => t.number === focusedTrack) && <p className="repo-routing-notes" role="status">La pista {focusedTrack} no existe en la configuración guardada de este setup.</p>}<TrackList setup={setup} library={library} focusedTrack={focusedTrack} onFocusTrack={number => onNavigate({ ...location, track: number })} onChange={changeTracks} onDefinition={setDefinition} /></>}
-      {view === 'diagram' && <RepositoryDiagram setup={setup} devices={library.devices} onLayout={layout => edit({ ...setup, studio_layout: layout })} />}
+      {view === 'diagram' && <Suspense fallback={<p className="oconfig-cable-help">Abriendo cableado…</p>}><RepositoryCableEditor setup={setup} library={library} onChange={edit} /></Suspense>}
       {view === 'hardware' && <section className="repo-hardware">
         <div className="repo-hardware-toolbar"><div><button aria-pressed={hardwareView === 'rear'} onClick={() => onNavigate({ ...location, panel: 'rear' })}>Conexiones</button>
           <button aria-pressed={hardwareView === 'top'} onClick={() => onNavigate({ ...location, panel: 'top' })}>Vista superior</button></div>
@@ -228,7 +229,7 @@ export function RepositoryWorkspace() {
     setups: s.category === 'setups' ? old.setups.map(d => d.id === s.id ? record as Setup : d) : old.setups } : old), []);
   if (!library) return <div className="repo-workspace"><main className="repo-start"><div className="repo-brand"><img src="/oconfig.svg" width="32" height="32" alt="" /><h1>Hapax Oconfig</h1></div>
     <p role={error ? 'alert' : 'status'}>{error || 'Abriendo la biblioteca del repo…'}</p>
-    {error && <><button onClick={() => window.location.reload()}>Reintentar</button><a href="/standalone">Abrir editor independiente</a></>}
+    {error && <button onClick={() => window.location.reload()}>Reintentar</button>}
   </main></div>;
   const unknown = selection?.category === 'devices'
     ? !library.devices.some(d => d.id === selection.id) ? `No existe el equipo «${selection.id}» en esta biblioteca.` : ''
@@ -242,7 +243,7 @@ export function RepositoryWorkspace() {
       {library[category].filter(item => `${item.title} ${item.id}`.toLowerCase().includes(query.toLowerCase())).map(item => <button key={item.id}
         aria-current={selection?.category === category && selection.id === item.id ? 'page' : undefined} onClick={() => select({ category, id: item.id })}>
         <span>{item.title}</span><small>{category === 'setups' ? `${(item as Setup).tracks.length} pistas` : item.id}</small>
-      </button>)}</div></section>)}</nav><a className="repo-standalone-link" href="/standalone" onClick={e => { if (dirty.current && !window.confirm('Hay cambios sin guardar. ¿Salir sin guardarlos?')) e.preventDefault(); }}>Editor independiente</a>
+      </button>)}</div></section>)}</nav>
   </aside>{unknown ? <main className="repo-content repo-start"><p role="alert">{unknown}</p><button onClick={() => navigate({ ...openLocation(null, location), setup: library.setups[0]?.id || 'studio' })}>Ir al inicio</button></main> : selection ? <Editor key={`${selection.category}:${selection.id}`} selection={selection} library={library} location={location} onNavigate={navigate} onSaved={onSaved} onDirty={onDirty} /> : <RepositoryHome library={library} setupId={location.setup} onSetupChange={setup => navigate({ ...location, setup })} onOpen={select} />}
     {pending && <Dialog title="Cambios sin guardar" onClose={cancel}>
       <h2 id="unsaved-title">Cambios sin guardar</h2><p>Guarda la ficha actual para conservar los cambios antes de abrir otra.</p>

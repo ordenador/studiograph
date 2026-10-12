@@ -6,6 +6,11 @@ export type Connector = {
   port?: string;
 };
 
+export function hapaxHandlePort(handle: string): string {
+  return /^midi-[a-d]$/.test(handle) ? handle.slice(-1).toUpperCase() : handle === 'usb-host' ? 'USBH' : handle === 'usb-device' ? 'USBD'
+    : /^cv-[1-4]$/.test(handle) ? `CV${handle.slice(-1)}` : /^gate-[1-4]$/.test(handle) ? `G${handle.slice(-1)}` : '';
+}
+
 // Looking directly at the rear connectors, not through the front panel.
 // Positions are a readable schematic based on packshots; they are not CAD dimensions.
 export const CONNECTORS: Connector[] = [

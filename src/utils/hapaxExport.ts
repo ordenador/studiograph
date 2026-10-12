@@ -191,7 +191,7 @@ export function generateHapaxDefinition(definition: HapaxDefinition): string {
     for (const [section, mappings] of grouped) {
       lines.push(`# ${section}`);
       for (const mapping of mappings) {
-        lines.push(`${mapping.msb}:${mapping.lsb}:7 ${mapping.paramName}`);
+        lines.push(`${mapping.msb}:${mapping.lsb}:${mapping.depth || 7} ${mapping.paramName}`);
       }
       lines.push('');
     }
@@ -266,7 +266,10 @@ export function generateAllDefinitions(
       drumLanes: data.drumLanes,
     };
 
-    const content = generateHapaxDefinition(definition);
+    const generated = generateHapaxDefinition(definition);
+    // Keep source sections the visual editor does not model (PC, COMMENT,
+    // INPORT, MAXRATE, future sections), rather than exporting a partial copy.
+    const content = data.sourceDefinition ? mergeDefinition(data.sourceDefinition, generated) : generated;
     const sanitized = data.name.replace(/[^a-zA-Z0-9]/g, '_');
     const filename = hasMultiple
       ? `${sanitized}_${hapaxPort}.txt`
@@ -276,6 +279,22 @@ export function generateAllDefinitions(
   }
 
   return definitions;
+}
+
+export function mergeDefinition(source: string, generated: string): string {
+  let result = source;
+  for (const key of ['TRACKNAME', 'TYPE', 'OUTPORT', 'OUTCHAN']) {
+    const line = generated.match(new RegExp(`^${key} .*$`, 'm'))?.[0];
+    if (!line) continue;
+    const pattern = new RegExp(`^${key} .*$`, 'm');
+    result = pattern.test(result) ? result.replace(pattern, () => line) : `${line}\n${result}`;
+  }
+  for (const section of ['CC', 'NRPN', 'ASSIGN', 'AUTOMATION', 'DRUMLANES']) {
+    const pattern = new RegExp(`\\[${section}\\][\\s\\S]*?\\[/${section}\\]`);
+    const replacement = generated.match(pattern)?.[0];
+    if (replacement) result = pattern.test(result) ? result.replace(pattern, () => replacement) : `${result}\n${replacement}\n`;
+  }
+  return result;
 }
 
 // Trigger download of a single file

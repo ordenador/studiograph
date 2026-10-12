@@ -23,7 +23,6 @@
 .repo-sidebar h2 .repo-section-toggle { flex-direction:row; justify-content:space-between; gap:8px; padding:0; color:#d1d5db; }
 .repo-section-toggle span { margin-left:auto; font-weight:400; color:#a1a1aa; font-size:12px; }
 .repo-mobile-library { display:none !important; }
-.repo-standalone-link { color:#9ca3af; border-top:1px solid #374151; padding:12px 8px 0; }
 .repo-content { flex:1; min-width:0; overflow:auto; display:flex; flex-direction:column; }
 .repo-content > *, .repo-edit-area > * { flex-shrink:0; }
 .repo-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:72px; padding:14px 24px; border-bottom:1px solid #374151; background:#18181b; }
@@ -211,9 +210,40 @@
   .repo-sidebar.library-open > input { display:block; grid-column:1/-1; margin:12px 0; }
   .repo-sidebar.library-open nav { display:block; grid-column:1/-1; max-height:200px; overflow:auto; }
   .repo-sidebar nav .repo-home-link { margin-bottom:12px; }
-  .repo-standalone-link { display:none; }
   .home-header, .routing-section, .home-songs { padding:20px 16px; }
   .home-setups { padding:0 16px; gap:16px; }
   .home-setup-heading { padding:20px 16px 0; }
   .repo-track-list { padding:20px 16px; }
+}
+
+.oconfig-cable-editor { flex:1 !important; min-height:560px; display:flex; flex-direction:column; }
+.oconfig-cable-actions { display:flex; flex-wrap:wrap; gap:8px; padding:16px 24px 8px; }
+.oconfig-cable-help, .oconfig-cable-notice { margin:0; padding:8px 24px 16px; color:#a1a1aa; font-size:12px; line-height:1.6; }
+.oconfig-cable-notice { color:#efca61; }
+.oconfig-cable-body { display:flex; position:relative; flex:1; min-height:440px; overflow:hidden; border-top:1px solid #3f3f46; }
+.oconfig-canvas { min-width:0; position:relative; min-height:440px; height:auto; }
+.oconfig-equipment-library { width:230px; height:auto; flex-shrink:0; max-height:calc(100dvh - 280px); background:#18181b; }
+.oconfig-equipment-library > div:first-child { padding:16px; }
+.oconfig-equipment-library h2 { margin:0; }
+.oconfig-cable-body > .w-80 { width:300px; flex-shrink:0; height:auto; max-height:calc(100dvh - 280px); background:#18181b; }
+.oconfig-cable-body button { font-size:12px; padding:5px 8px; border-radius:4px; }
+.oconfig-cable-body .react-flow__controls button { padding:5px; border-radius:0; }
+.oconfig-cable-body input[type=checkbox] { width:16px; height:16px; }
+.oconfig-cable-body input.sr-only { width:1px; height:1px; }
+.oconfig-cable-body .bg-gray-800 { background:#27272a; }
+.oconfig-cable-body .bg-gray-900 { background:#18181b; }
+.oconfig-cable-body .bg-blue-600, .oconfig-cable-body .bg-purple-600 { background:#3f3f46; }
+.oconfig-cable-body .animate-pulse { animation:none; }
+.oconfig-cable-body .rounded-lg { border-radius:4px; }
+.oconfig-cable-body .oconfig-add-equipment { margin-top:8px; width:100%; background:transparent; }
+.oconfig-hapax-rear { position:relative; background:#111113; border:1px solid #52525b; border-radius:4px; }
+.oconfig-hapax-rear.is-selected { border-color:#f4f4f5; }
+.oconfig-hapax-rear .hapax-patch-handle { width:12px; height:12px; border:2px solid #111113; transform:translate(-50%, -50%); z-index:3; cursor:crosshair; }
+.oconfig-cable-body .oconfig-hapax-edit { position:absolute; right:24px; top:10px; background:transparent; border:0; color:#e4e4e7; padding:2px 4px; font-size:14px; }
+@container (max-width:750px) {
+  .oconfig-cable-body { flex-wrap:wrap; }
+  .oconfig-canvas { flex-basis:100%; min-height:440px; }
+  .oconfig-equipment-library, .oconfig-cable-body > .w-80 { width:100%; max-height:420px; }
+  .oconfig-equipment-library { order:2; }
+  .oconfig-cable-body > .w-80 { order:3; border-top:1px solid #3f3f46; }
 }

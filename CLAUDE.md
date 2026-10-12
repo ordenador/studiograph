@@ -1,3 +1,8 @@
+> Este fork se llama Hapax Oconfig. La entrada actual es RepositoryWorkspace;
+> Cableado libre integra el catálogo, StudioCanvas y NodeEditor dentro del setup.
+> Seguir AGENTS.md y REPOSITORY-MODE.md para guardado, compatibilidad y QA.
+> La arquitectura histórica que sigue documenta las piezas reutilizadas.
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.

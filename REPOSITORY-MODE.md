@@ -3,7 +3,8 @@
 Default route loads devices/setups from the parent Hapax repository through its
 loopback API. Start from that repository with make oconfig-dev; npm run dev alone
 needs an API already running. The proxy target is HAPAX_API_PORT (8796 default).
-The existing independent editor remains at /standalone and retains JSON flows.
+The setup's Cableado libre integrates all editing capabilities. There is no
+separate application; old bookmarks redirect to the workspace.
 
 Repository mode saves canonical device.toml/setup.toml records, not exported
 StudioGraph JSON or native Hapax saves. The parent API preserves unknown fields,
@@ -17,7 +18,7 @@ and an action to choose the output; they never invent a cable.
 
 Track routing uses a readable list with controls revealed per track. Metadata
 lives under Ajustes; the rear/top Hapax SVG is under Panel Hapax, and the original
-movable graph is under Canvas libre. The sidebar equipment catalog collapses,
+editable graph is under Cableado libre. The sidebar equipment catalog collapses,
 search reveals matching equipment, and narrow screens use a Biblioteca button.
 
 The address bar tracks the current setup and view. Copy it directly or use
@@ -43,4 +44,27 @@ message and a shortcut to Pistas; no cables are invented for NULL outputs.
 The parent repository documents UX, API, limitations and maintenance in
  docs/studiograph-ux.md and docs/studiograph-fork.md. This app does not commit,
 push, access MIDI/USB devices, flash firmware or write SD cards. Definitions
-are currently read-only, keeping all PC/default/NRPN/ASSIGN sections intact.
+in HAPAX/ are read-only. Designs store their edited CC/NRPN, ASSIGN, automation,
+drum lanes, ports, Local Off, icons, presets and source definitions as versioned
+JSON in the setup's `oconfig_workspace` TOML field. The save is atomic with the
+rest of the setup, retaining comments/unknown fields and optimistic conflicts.
+Generated TXT downloads merge edited sections into the original source so PC,
+input options, comments, unknown sections and NRPN 14-bit depth survive.
+
+New designs load canonical track routes and full source definitions. A block
+represents a track (one physical unit may have several blocks). The rear Hapax
+node shows connector positions from our schematic; its lower handles correspond
+to outputs and upper handles to input returns. This is a plan, not live hardware.
+Automatic layout uses short rows and respects node widths. Ordering a saved
+design is explicit and undoable; positions persist with Guardar en repo.
+
+Applying a design updates only ports/channels on linked tracks and refuses
+ambiguous multiple destinations. Names/definition choices remain editable in
+Pistas. Changes to canonical tracks flag an older design for review; reconstruct
+from tracks only on explicit request. Deleting a block does not delete its
+canonical track. Unbound equipment stays in the design without silently creating
+tracks or claiming physical verification.
+
+JSON import/export remains optional for backup compatibility. The old browser
+storage is retained read-only for explicit recovery; the active workbench uses a
+different key. Custom catalog equipment can be reused from other saved setups.
