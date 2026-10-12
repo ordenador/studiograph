@@ -412,7 +412,7 @@ export const useStudioStore = create<StudioState>()(
 
             if (data.isHapax) {
               const outputIds = new Set(data.outputs.map(p => p.id));
-              let newOutputs = [...data.outputs];
+              const newOutputs = [...data.outputs];
               let newInputs = [...data.inputs];
 
               // Backfill midi-d

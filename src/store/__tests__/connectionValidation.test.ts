@@ -3,17 +3,8 @@ import type { Node } from '@xyflow/react';
 import type { InstrumentNodeData } from '../../types';
 import { useStudioStore } from '../useStudioStore';
 
-// Mock localStorage for persist middleware
-const localStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string) => store[key] ?? null,
-    setItem: (key: string, value: string) => { store[key] = value; },
-    removeItem: (key: string) => { delete store[key]; },
-    clear: () => { store = {}; },
-  };
-})();
-Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock });
+// Installed before store imports by src/test/setup.ts.
+const localStorageMock = globalThis.localStorage;
 
 const makeNode = (id: string, name = 'Test', overrides?: Partial<InstrumentNodeData>): Node<InstrumentNodeData> => ({
   id,

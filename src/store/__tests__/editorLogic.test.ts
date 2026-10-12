@@ -2,17 +2,8 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import type { InstrumentNodeData, InstrumentPreset, AssignCC, AutomationLane, DrumLane } from '../../types';
 import { useStudioStore } from '../useStudioStore';
 
-// Mock localStorage for persist middleware
-const localStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string) => store[key] ?? null,
-    setItem: (key: string, value: string) => { store[key] = value; },
-    removeItem: (key: string) => { delete store[key]; },
-    clear: () => { store = {}; },
-  };
-})();
-Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock });
+// Installed before store imports by src/test/setup.ts.
+const localStorageMock = globalThis.localStorage;
 
 const makePreset = (id: string, name = 'Preset', overrides?: Partial<InstrumentPreset>): InstrumentPreset => ({
   id,
