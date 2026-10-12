@@ -30,7 +30,7 @@ export function exportStudio(
   const url = URL.createObjectURL(blob);
 
   const date = new Date().toISOString().split('T')[0];
-  const filename = `StudioGraph_Export_${date}.json`;
+  const filename = `Hapax_Oconfig_Export_${date}.json`;
 
   const a = document.createElement('a');
   a.href = url;

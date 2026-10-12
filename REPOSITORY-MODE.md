@@ -1,7 +1,7 @@
-# Hapax repository workspace
+# Hapax Oconfig — repository workspace
 
 Default route loads devices/setups from the parent Hapax repository through its
-loopback API. Start from that repository with make studio-dev; npm run dev alone
+loopback API. Start from that repository with make oconfig-dev; npm run dev alone
 needs an API already running. The proxy target is HAPAX_API_PORT (8796 default).
 The existing independent editor remains at /standalone and retains JSON flows.
 

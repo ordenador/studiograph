@@ -688,7 +688,7 @@ export function Sidebar() {
       {/* Header */}
       <div className="p-4 border-b border-gray-700">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-white">StudioGraph</h1>
+          <h1 className="text-xl font-bold text-white">Hapax Oconfig</h1>
           <div className="flex gap-1">
             <button
               onClick={handleExport}

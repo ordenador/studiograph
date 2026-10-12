@@ -256,7 +256,7 @@ describe('exportStudio', () => {
 
     exportStudio(nodes, [], []);
 
-    expect(mockAnchor.download).toMatch(/^StudioGraph_Export_\d{4}-\d{2}-\d{2}\.json$/);
+    expect(mockAnchor.download).toMatch(/^Hapax_Oconfig_Export_\d{4}-\d{2}-\d{2}\.json$/);
   });
 });
 

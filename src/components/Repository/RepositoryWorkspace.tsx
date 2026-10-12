@@ -193,11 +193,11 @@ export function RepositoryWorkspace() {
   const onSaved = useCallback((s: Selection, record: Setup | Device) => setLibrary(old => old ? { ...old,
     devices: s.category === 'devices' ? old.devices.map(d => d.id === s.id ? record as Device : d) : old.devices,
     setups: s.category === 'setups' ? old.setups.map(d => d.id === s.id ? record as Setup : d) : old.setups } : old), []);
-  if (!library) return <div className="repo-workspace"><main className="repo-start"><h1>StudioGraph · Hapax</h1>
+  if (!library) return <div className="repo-workspace"><main className="repo-start"><h1>Hapax Oconfig</h1>
     <p role={error ? 'alert' : 'status'}>{error || 'Abriendo la biblioteca del repo…'}</p>
     {error && <><button onClick={() => window.location.reload()}>Reintentar</button><a href="/standalone">Abrir editor independiente</a></>}
   </main></div>;
-  return <div className="repo-workspace"><aside className="repo-sidebar"><h1>StudioGraph</h1><p>Biblioteca Hapax</p>
+  return <div className="repo-workspace"><aside className="repo-sidebar"><h1>Hapax Oconfig</h1><p>O de Ordenador</p>
     <input type="search" aria-label="Buscar en biblioteca" placeholder="Buscar equipo o setup" value={query} onChange={e => setQuery(e.target.value)} />
     <nav aria-label="Biblioteca">{(['setups', 'devices'] as const).map(category => <section key={category}><h2>{category === 'setups' ? 'Setups' : 'Equipos'}</h2>
       {library[category].filter(item => `${item.title} ${item.id}`.toLowerCase().includes(query.toLowerCase())).map(item => <button key={item.id}

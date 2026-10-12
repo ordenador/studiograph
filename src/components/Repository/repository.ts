@@ -46,7 +46,7 @@ export async function request<T>(path: string, options?: RequestInit): Promise<T
   const response = await fetch(`/api/hapax/${path}`, options);
   let data;
   try { data = await response.json(); }
-  catch { throw new Error('La API del repo no esta disponible. Inicia la app con make studio-dev.'); }
+  catch { throw new Error('La API del repo no esta disponible. Inicia la app con make oconfig-dev.'); }
   if (!response.ok) throw new Error(data.error || 'No se pudo completar la solicitud.');
   return data as T;
 }
