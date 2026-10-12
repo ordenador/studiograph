@@ -687,44 +687,45 @@ export function Sidebar() {
     <div className="w-64 bg-gray-900 border-r border-gray-700 flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b border-gray-700">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-white">Hapax Oconfig</h1>
-          <div className="flex gap-1">
-            <button
-              onClick={handleExport}
-              className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
-              title="Save Studio"
-            >
-              <Save size={16} />
-            </button>
-            <input
-              ref={importInputRef}
-              type="file"
-              accept=".json"
-              onChange={handleImport}
-              className="hidden"
-            />
-            <button
-              onClick={() => importInputRef.current?.click()}
-              className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
-              title="Load Studio"
-            >
-              <FolderOpen size={16} />
-            </button>
-            <button
-              onClick={() => {
-                if (window.confirm('Start over? This will clear all instruments and connections.')) {
-                  clearStudio();
-                }
-              }}
-              className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
-              title="Clear Canvas"
-            >
-              <RotateCcw size={16} />
-            </button>
-          </div>
+        <div className="flex items-center gap-2">
+          <img src="/oconfig.svg" width="32" height="32" alt="" className="shrink-0" />
+          <h1 className="text-lg font-bold text-white">Hapax Oconfig</h1>
         </div>
         <p className="text-xs text-gray-400 mt-1">Drag instruments onto the canvas</p>
+        <div className="flex justify-end gap-1 mt-3">
+          <button
+            onClick={handleExport}
+            className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
+            title="Save Studio"
+          >
+            <Save size={16} />
+          </button>
+          <input
+            ref={importInputRef}
+            type="file"
+            accept=".json"
+            onChange={handleImport}
+            className="hidden"
+          />
+          <button
+            onClick={() => importInputRef.current?.click()}
+            className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
+            title="Load Studio"
+          >
+            <FolderOpen size={16} />
+          </button>
+          <button
+            onClick={() => {
+              if (window.confirm('Start over? This will clear all instruments and connections.')) {
+                clearStudio();
+              }
+            }}
+            className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
+            title="Clear Canvas"
+          >
+            <RotateCcw size={16} />
+          </button>
+        </div>
       </div>
 
       {/* Add New Buttons */}

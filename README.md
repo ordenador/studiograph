@@ -2,6 +2,12 @@
 
 **O de Ordenador.** Nuestra app para mantener equipos, setups y routing de Hapax. Basada en [StudioGraph de turnerm5](https://github.com/turnerm5/studiograph), conservando su historial y autoría.
 
+El logo propio combina una O de ocho pads con una marca de configuración lista.
+Los colores se inspiran en los pads de Hapax; no son una paleta oficial de Squarp.
+El archivo maestro [public/oconfig.svg](public/oconfig.svg) tiene fondo transparente
+y se usa en la app y el favicon. [public/oconfig.png](public/oconfig.png) es su
+versión transparente de 512 × 512 px. Mantener el SVG como fuente al crear variantes.
+
 A visual MIDI studio designer for planning instrument routing, managing CC/NRPN definitions, and exporting synthesizer configurations for the Squarp Hapax sequencer.
 
 ## Mario's Hapax workspace

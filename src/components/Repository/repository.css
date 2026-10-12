@@ -9,7 +9,9 @@
 .repo-workspace h1 { font-size:18px; font-weight:600; margin:0; }
 .repo-workspace h2 { font-size:14px; font-weight:600; margin:0 0 12px; }
 .repo-sidebar { width:240px; flex-shrink:0; background:#18181b; border-right:1px solid #374151; display:flex; flex-direction:column; padding:20px 12px 12px; }
-.repo-sidebar > h1, .repo-sidebar > p { margin-left:8px; }
+.repo-brand { display:flex; align-items:center; gap:8px; }
+.repo-brand img { flex-shrink:0; }
+.repo-sidebar > .repo-brand, .repo-sidebar > p { margin-left:8px; }
 .repo-sidebar > p { color:#9ca3af; margin-top:3px; margin-bottom:20px; }
 .repo-sidebar > input { margin-bottom:20px; }
 .repo-sidebar nav { overflow-y:auto; flex:1; }
@@ -93,6 +95,7 @@
 .repo-edit-area:disabled .repo-diagram { pointer-events:none; }
 @media (max-width:1100px) { .repo-toolbar { align-items:flex-start; flex-wrap:wrap; } .repo-toolbar-actions { justify-content:flex-start; } .repo-metadata { flex-wrap:wrap; } }
 @media (max-width:720px) { .repo-sidebar { width:190px; padding:16px 8px; } .repo-toolbar, .repo-metadata, .repo-hardware { padding:16px; } .repo-tabs { padding:0 8px; flex-wrap:wrap; } .repo-toolbar-actions button span { display:none; } .repo-device-form { grid-template-columns:1fr; padding:0 16px 16px; } .repo-hardware-toolbar { flex-wrap:wrap; } }
+@media (max-width:720px) { .repo-sidebar .repo-brand img { width:24px; height:24px; } .repo-sidebar .repo-brand h1 { font-size:16px; } }
 
 .repo-definition-meta { display:block; color:#9ca3af; font-size:11px; padding-top:5px; }
 .repo-tracks input:invalid { border-color:#fca5a5; }

@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><title>Hapax Oconfig · O de Ordenador</title><rect width="32" height="32" rx="4" fill="#18181b"/><circle cx="16" cy="16" r="9" fill="none" stroke="#f4f4f5" stroke-width="3"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Hapax Oconfig · O de Ordenador</title>
+  <desc id="desc">O formada por ocho pads de colores y una marca de configuración lista.</desc>
+  <rect x="4" y="4" width="16" height="16" rx="3" fill="#efca61"/>
+  <rect x="24" y="4" width="16" height="16" rx="3" fill="#45cba0"/>
+  <rect x="44" y="4" width="16" height="16" rx="3" fill="#3ed5c4"/>
+  <rect x="44" y="24" width="16" height="16" rx="3" fill="#58a9ed"/>
+  <rect x="44" y="44" width="16" height="16" rx="3" fill="#aa8ce4"/>
+  <rect x="24" y="44" width="16" height="16" rx="3" fill="#e97ec4"/>
+  <rect x="4" y="44" width="16" height="16" rx="3" fill="#ea6478"/>
+  <rect x="4" y="24" width="16" height="16" rx="3" fill="#ee8175"/>
+  <path d="m26 32 4 4 8-9" fill="none" stroke="#269c78" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
