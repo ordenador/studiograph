@@ -1,4 +1,4 @@
-# Hapax Oconfig — O de Ordenador
+# Hapax Oconfig
 
 Fork de turnerm5/studiograph, integrado como submódulo de ordenador/hapax.
 Conservar historial y procedencia. No asignar una licencia ajena al original:

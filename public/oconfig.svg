@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title id="title">Hapax Oconfig · O de Ordenador</title>
+  <title id="title">Hapax Oconfig</title>
   <desc id="desc">O formada por ocho pads de colores y una marca de configuración lista.</desc>
   <rect x="4" y="4" width="16" height="16" rx="3" fill="#efca61"/>
   <rect x="24" y="4" width="16" height="16" rx="3" fill="#45cba0"/>
