@@ -1,6 +1,7 @@
 import { ArrowRight, Music2 } from 'lucide-react';
 import { RoutingMap } from './RoutingMap';
 import { CopyViewLink } from './CopyViewLink';
+import { HardwareGallery } from './HardwareGallery';
 import { routeWarnings, stateLabel, type Library, type Selection } from './repository';
 
 export function RepositoryHome({ library, setupId, onSetupChange, onOpen }: {
@@ -25,5 +26,6 @@ export function RepositoryHome({ library, setupId, onSetupChange, onOpen }: {
         <ul>{library.songs.filter(s => s.setup === setup.id).map(song => <li key={song.id}><Music2 size={18} aria-hidden="true" /><strong>{song.title}</strong><span>{song.bpm} BPM</span></li>)}</ul>
       </section>}
     </> : <p className="repo-empty">Todavía no hay setups en la biblioteca.</p>}
+    <HardwareGallery devices={library.devices} onOpen={id => onOpen({ category: 'devices', id })} />
   </main>;
 }

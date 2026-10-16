@@ -73,6 +73,7 @@ export interface InstrumentNodeData extends Record<string, unknown> {
   iconId?: string; // Icon identifier for display
   localOff?: boolean; // Local Off prevents MIDI feedback loops
   presetId?: string; // Links canvas node to sidebar preset for edit propagation
+  hardwareId?: string; // Stable repository catalogue ID for the physical illustration
   showCVPorts?: boolean; // Toggle visibility of CV/Gate ports (for Hapax)
   sourceDefinition?: string;
   trackNumber?: number;
@@ -89,6 +90,7 @@ export interface StudioEdge extends Edge {
 
 export interface InstrumentPreset {
   id: string;
+  hardwareId?: string;
   name: string;
   manufacturer: string;
   type: InstrumentType;

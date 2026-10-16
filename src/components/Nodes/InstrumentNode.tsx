@@ -11,6 +11,8 @@ import type { InstrumentNodeData, Port, PortType } from '../../types';
 import { PORT_COLORS } from '../../data/defaultNodes';
 import { useStudioStore } from '../../store/useStudioStore';
 import { traceHapaxRouting } from '../../utils/hapaxRouting';
+import { DeviceHardware } from '../Repository/DeviceHardware';
+import { nodeHardwareId } from '../Repository/hardwareVisuals';
 
 // Map icon IDs to components
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -48,6 +50,7 @@ function InstrumentNodeComponent({ id, data }: NodeProps<InstrumentNodeType>) {
   const { removeNode, setSelectedNode, updateNodeWidth, selectedNodeId, nodes, edges } = useStudioStore();
   const selected = selectedNodeId === id;
   const nodeData = data as InstrumentNodeData;
+  const hardwareId = nodeHardwareId(id, nodeData);
 
   // Find ALL Hapax connections for this node (including multi-hop chains)
   const hapaxHandleLabels: Record<string, string> = {
@@ -281,6 +284,7 @@ function InstrumentNodeComponent({ id, data }: NodeProps<InstrumentNodeType>) {
 
       {/* Body */}
       <div className="px-3 py-2 space-y-1">
+        {hardwareId && <DeviceHardware id={hardwareId} compact />}
         {!nodeData.isHapax && (
           <div className="flex items-center gap-2 text-xs">
             {hapaxPort && (

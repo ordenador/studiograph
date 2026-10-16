@@ -1,6 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Save, RefreshCw, Undo2, Plus, X, Home, ChevronDown, ChevronUp } from 'lucide-react';
 import { HapaxHardware } from './HapaxHardware';
+import { DeviceHardwareFigure } from './DeviceHardware';
 import { RepositoryHome } from './RepositoryHome';
 import { RoutingMap } from './RoutingMap';
 import { CopyViewLink } from './CopyViewLink';
@@ -162,7 +163,7 @@ function Editor({ selection, library, location, onNavigate, onSaved, onDirty }: 
       <button className="repo-primary" disabled={!dirty || busy} onClick={() => void save()}><Save size={16} />Guardar en repo</button>
     </div></header>
     {error && <div role="alert" className="repo-error">{error}</div>}
-    <fieldset disabled={busy} inert={busy} className="repo-edit-area">{device && metadata}
+    <fieldset disabled={busy} inert={busy} className="repo-edit-area">{device && <><DeviceHardwareFigure id={device.id} title={device.title} />{metadata}</>}
     {setup && <>
       <nav className="repo-tabs" aria-label="Vista del setup">{(['overview', 'tracks', 'hardware', 'diagram', 'settings'] as const).map(v => <button key={v} aria-pressed={view === v} onClick={() => onNavigate({ ...location, view: v })}>
         {{ overview: 'Conexiones', tracks: 'Pistas', diagram: 'Cableado libre', hardware: 'Panel Hapax', settings: 'Ajustes' }[v]}</button>)}<span>{setup.tracks.length} / 16 pistas</span>

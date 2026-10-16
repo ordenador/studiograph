@@ -150,6 +150,37 @@
 .routing-equipment { min-width:0; padding-left:12px; }
 .repo-workspace .routing-target { display:grid; grid-template-columns:40px minmax(0,1fr) 16px; gap:12px; align-items:center; text-align:left; width:100%; min-height:92px; padding:16px 12px; border:0; border-bottom:1px solid #3f3f46; border-radius:0; background:transparent; }
 .routing-target > svg { color:#d4d4d8; }
+.repo-workspace .routing-target { grid-template-columns:120px minmax(0,1fr) 16px; }
+.device-hardware { display:flex; align-items:center; justify-content:center; width:100%; min-width:0; }
+.device-hardware img { display:block; width:100%; height:100%; object-fit:contain; }
+.device-hardware > div { width:100%; }
+.device-hardware-compact { height:130px; }
+.device-hardware-compact > div { max-width:220px; }
+.routing-target .device-hardware { height:100px; }
+.device-hardware-figure { margin:0; padding:16px 24px 24px; max-width:960px; }
+.device-hardware-figure > .device-hardware { height:auto; aspect-ratio:var(--hardware-aspect-ratio); max-height:440px; }
+.device-hardware-figure > .device-hardware > div { max-width:690px; }
+.device-hardware-figure figcaption { margin-top:16px; color:#b8b8bc; font-size:12px; line-height:1.7; }
+.device-hardware-figure figcaption span { display:block; }
+.device-hardware-figure a { color:#dedee1; text-decoration:underline; }
+.device-hardware-missing { padding:16px; color:#b8b8bc; font-size:12px; }
+.hardware-gallery { margin:32px 28px; border-top:1px solid #3f3f46; padding-top:24px; }
+.hardware-gallery h2 { font-size:18px; margin:0 0 8px; font-weight:600; }
+.hardware-gallery > p { font-size:13px; color:#b8b8bc; margin:0 0 20px; }
+.hardware-gallery ul { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:24px; list-style:none; margin:0; padding:0; }
+.repo-workspace .hardware-gallery li > button { display:flex; flex-direction:column; justify-content:flex-start; align-items:stretch; gap:12px; text-align:left; width:100%; height:100%; padding:16px; background:transparent; border:1px solid #3f3f46; border-radius:4px; }
+.repo-workspace .hardware-gallery li > button:hover { background:#202022; border-color:#717176; }
+.hardware-gallery .device-hardware { height:160px; flex-shrink:0; }
+.hardware-gallery .device-hardware > div { max-width:100%; }
+.hardware-gallery strong { font-size:13px; font-weight:500; line-height:1.5; }
+.hardware-gallery button > span { font-size:12px; color:#b8b8bc; }
+@media (max-width:720px) {
+  .repo-workspace .routing-target { grid-template-columns:84px minmax(0,1fr) 16px; gap:8px; padding:12px 4px; }
+  .device-hardware-figure { padding:16px; }
+  .device-hardware-figure > .device-hardware { max-height:340px; }
+  .hardware-gallery ul { grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr)); gap:16px; }
+  .hardware-gallery { margin:24px 16px; }
+}
 .routing-target > span { display:flex; flex-direction:column; gap:6px; min-width:0; }
 .routing-target strong { font-size:15px; font-weight:600; }
 .routing-target > span > span { color:#a1a1aa; font-size:12px; line-height:1.5; }
@@ -184,7 +215,7 @@
   .repo-workspace .repo-track-summary { grid-template-columns:28px minmax(100px,1fr) minmax(130px,1fr) 16px; gap:12px; }
   .repo-track-summary > span:nth-child(3) { display:none; }
 }
-@container (max-width:600px) {
+@container (max-width:700px) {
   .routing-map { grid-template-columns:minmax(0,1fr); gap:8px; }
   .routing-source { justify-content:center; padding:0 0 12px; }
   .routing-source-body { width:210px; }
@@ -192,7 +223,8 @@
   .routing-assigned .routing-destinations { border-left:0; }
   .routing-source h3 { margin-bottom:8px; }
   .routing-row { grid-template-columns:110px minmax(0,1fr); }
-  .repo-workspace .routing-target { grid-template-columns:28px minmax(0,1fr) 16px; gap:8px; padding:12px 4px; }
+  .repo-workspace .routing-target { grid-template-columns:84px minmax(0,1fr) 16px; gap:8px; padding:12px 4px; }
+  .routing-target .device-hardware { height:72px; }
   .routing-target > svg:first-child { width:24px; }
   .routing-target strong { font-size:14px; }
   .routing-equipment { padding-left:8px; }

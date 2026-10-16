@@ -79,7 +79,7 @@ const routeHandles = (port: string): string[] => /^[A-D]$/.test(port) ? [`midi-$
       : port.startsWith('CV') ? [`cv-${port.slice(-1)}`] : port.startsWith('G') ? [`gate-${port.slice(-1)}`] : [];
 
 export function equipmentPreset(device: Device): InstrumentPreset {
-  return { id: `repo:${device.id}`, name: device.title, manufacturer: device.kind, type: 'POLY', isRemovable: true,
+  return { id: `repo:${device.id}`, hardwareId: device.id, name: device.title, manufacturer: device.kind, type: 'POLY', isRemovable: true,
     inputs: [], outputs: [], iconId: 'music' };
 }
 
@@ -93,7 +93,7 @@ export function seedWorkspace(setup: Setup, devices: Device[], definitions: Reco
     const inputs: Port[] = handles.length ? handles.map((h, n) => ({ id: `in-${n}`, label: h.startsWith('usb') ? h === 'usb-host' ? 'USB Device' : 'USB Host' : h.startsWith('midi') ? 'MIDI In' : h.startsWith('cv') ? 'CV In' : 'Gate In',
       type: h.startsWith('usb') ? 'usb' : h.startsWith('midi') ? 'midi' : 'cv' })) : [{ id: 'in-0', label: 'MIDI In', type: 'midi' }];
     nodes.push({ id, type: 'instrument', position: { x: (i % 3) * 350, y: 340 + Math.floor(i / 3) * 250 }, data: {
-      name: t.name, manufacturer: devices.find(d => d.id === t.device)?.title || t.device, channel: t.channel || 1,
+      name: t.name, hardwareId: t.device, manufacturer: devices.find(d => d.id === t.device)?.title || t.device, channel: t.channel || 1,
       type: 'POLY', inputs, outputs: [], ccMap: [], nrpnMap: [], assignCCs: [], automationLanes: [],
       ...definitionData(definitions[t.definition] || ''), isRemovable: true, showCVPorts: true, trackNumber: t.number } });
     handles.forEach((h, n) => edges.push({ id: `${id}:${h}`, source: 'hapax', sourceHandle: h, target: id, targetHandle: `in-${n}`,

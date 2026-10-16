@@ -1,0 +1,98 @@
+{
+  "reviewed": "2026-10-16",
+  "representation": "Original schematic SVG drawings; approximate proportions, static controls. Hapax uses the existing React SVG component.",
+  "research": "Search for each declared model with SVG/vector/panel terms, followed by manufacturer pages and packshots. Search results do not establish that no vector exists elsewhere.",
+  "models": [
+    {
+      "id": "hapax",
+      "result": "Existing original HapaxHardware component retained",
+      "reference": "https://squarp.net/hapax/"
+    },
+    {
+      "id": "0-coast",
+      "result": "SVG found at MIDI Guide; image-specific reuse terms were not verified. Created an original schematic from the manufacturer's panel instead. Second visual review: section outlines, signal-path silkscreen arrows and fine pitch control.",
+      "candidate": "https://midi.guide/d/make-noise/0-coast/",
+      "reference": "https://www.makenoisemusic.com/synthesizers-and-controllers/0-coast/",
+      "image": "https://www.makenoisemusic.com/wp-content/uploads/2026/04/0-coast-1024x625.webp",
+      "asset": "0-coast.svg"
+    },
+    {
+      "id": "op1-field",
+      "result": "SVG found at MIDI Guide; image-specific reuse terms were not verified. Original schematic redrawn after visual review: tiled panel, rounded white caps, circular black keys, actual field encoder colors and control grouping. Neutral original vector tape-screen diagram; no project state.",
+      "candidate": "https://midi.guide/d/teenage-engineering/op-1-field/",
+      "reference": "https://teenage.engineering/products/op-1",
+      "image": "https://assets.teenage.engineering/_img/627cab620e44b900044f3c11_1024.png",
+      "detail": "https://assets.teenage.engineering/_img/627ca7d20e44b900044f3c04_1024.png",
+      "asset": "op1-field.svg"
+    },
+    {
+      "id": "quad-cortex",
+      "result": "Commercial cut-file SVG found, not purchased or redistributed. Created an original schematic from Neural DSP's panel. Second visual review: empty touchscreen slot grid, machined hexagonal footswitch bases, neutral indicators; no preset or active chain.",
+      "candidate": "https://cutfilelabs.com/downloads/neural-dsp-quad-cortex-cut-file-template/",
+      "reference": "https://neuraldsp.com/quad-cortex",
+      "image": "https://images.ctfassets.net/8puu65w27ud0/5btw1Q95bBvjXJxulUs0ln/5d4faed3b83eac3382321be23e03607a/QC_components_front_image.png",
+      "asset": "quad-cortex.svg"
+    },
+    {
+      "id": "ep-133",
+      "result": "A React Native recreation (lrsbt/koii) surfaced; no standalone reusable manufacturer vector verified. Created an original schematic. Second visual review: neutral segmented display structure and raised key edges.",
+      "candidate": "https://github.com/lrsbt/koii",
+      "reference": "https://teenage.engineering/products/ep-133",
+      "image": "https://assets.teenage.engineering/_img/6978e1aefc9c2472dcdaf6ff_1024.webp",
+      "asset": "ep-133.svg"
+    },
+    {
+      "id": "ep-136",
+      "result": "No reusable vector verified in the search. Created an original two-channel mixer schematic, distinct from EP-133. Second visual review: port strip, channel fader caps and unlit segmented meter display.",
+      "reference": "https://teenage.engineering/products/ep-136",
+      "image": "https://assets.teenage.engineering/_img/69fb20b58697de2093f7eab5_1024.webp",
+      "asset": "ep-136.svg"
+    },
+    {
+      "id": "fm1",
+      "devices": [
+        "fm1-a",
+        "fm1-b",
+        "fm1-nrpn-test"
+      ],
+      "result": "No reusable vector verified in the search. Created an original schematic shared by the two units and the A/B-pending test reference.",
+      "reference": "https://www.cuvave.com/product?id=fm-1",
+      "image": "https://www.cuvave.com/images/products/fm-1.webp",
+      "asset": "fm1.svg"
+    },
+    {
+      "id": "keystep-32",
+      "result": "Manufacturer front-panel diagram found as JPEG, not SVG. Created an original mk2 schematic with 32 keys.",
+      "reference": "https://www.arturia.com/products/hybrid-synths/keystep-mk2/keystep-32-mk2",
+      "image": "https://medias.arturia.net/images/products/keystep-mk2/big-front.jpg",
+      "asset": "keystep-32.svg"
+    },
+    {
+      "id": "keystep-37",
+      "result": "Manufacturer front-panel diagram found as JPEG, not SVG. Created an original mk2 schematic with 37 keys and four extra encoders.",
+      "reference": "https://www.arturia.com/products/hybrid-synths/keystep-mk2/keystep-37-mk2",
+      "image": "https://medias.arturia.net/images/products/keystep-37-mk2/big-front.jpg",
+      "asset": "keystep-37.svg"
+    },
+    {
+      "id": "livetrak",
+      "result": "No reusable vector verified in the search. Created an original L6max schematic using Zoom's top packshot; not the L-6. Second visual review: blue channel strips, encoder rings, Scene, EFX, recorder and neutral meter markings.",
+      "reference": "https://zoomcorp.com/en/us/digital-mixer-multi-track-recorders/digital-mixer-recorder/livetrak-l6max/",
+      "image": "https://zoomcorp.com/media/original_images/L6max_promote_1.png.1200x630_q80_crop-smart_size_canvas_upscale.png",
+      "asset": "livetrak.svg"
+    },
+    {
+      "id": "spectravox",
+      "result": "No reusable standalone vector verified. Created an original schematic from Moog's product panel. The old api.moogmusic.com manual URL failed; an alternate PDF was incomplete, so neither was used to infer geometry.",
+      "reference": "https://www.moogmusic.com/synthesizers/spectravox/",
+      "image": "https://cdn.builder.io/api/v1/image/assets/47c5d023e7b3451a86ac03602c65dce8/6b738551bb4848e48ee7b6f8645f75e4",
+      "asset": "spectravox.svg"
+    },
+    {
+      "id": "bogen-gdu150",
+      "result": "Manufacturer datasheet with product image; no reusable standalone vector verified. Created a schematic of the flexible-neck microphone with integrated XLR, without a desktop base.",
+      "reference": "https://www.bogen.com/sites/default/files/2021-01/microphones_specsheet.pdf",
+      "asset": "bogen-gdu150.svg"
+    }
+  ]
+}

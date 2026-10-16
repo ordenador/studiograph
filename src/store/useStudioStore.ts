@@ -120,6 +120,7 @@ export const useStudioStore = create<StudioState>()(
         isRemovable: preset.isRemovable ?? true,
         iconId: preset.iconId,
         presetId: preset.id,
+        hardwareId: preset.hardwareId,
       },
     };
     set((state) => ({ nodes: [...state.nodes, newNode] }));

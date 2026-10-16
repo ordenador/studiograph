@@ -1,15 +1,9 @@
 import { useId, useState } from 'react';
-import { AudioLines, ChevronDown, ChevronUp, Drum, KeyboardMusic, SlidersHorizontal } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { HapaxHardware } from './HapaxHardware';
+import { DeviceHardware } from './DeviceHardware';
 import { groupRoutes } from './routingModel';
 import { portLabel, type Device, type Setup } from './repository';
-
-function EquipmentIcon({ id, kind }: { id: string; kind: string }) {
-  const Icon = id === 'ep-133' || kind.includes('drum') ? Drum
-    : id === 'quad-cortex' || kind.includes('effect') ? AudioLines
-    : id === 'spectravox' || id === '0-coast' ? SlidersHorizontal : KeyboardMusic;
-  return <Icon size={32} strokeWidth={1.3} aria-hidden="true" />;
-}
 
 export function RoutingMap({ setup, devices, onEditTrack, onOpenDevice }: {
   setup: Setup; devices: Device[];
@@ -43,7 +37,7 @@ export function RoutingMap({ setup, devices, onEditTrack, onOpenDevice }: {
           </div>)}</div>
           <div className="routing-equipment">
             <button className="routing-target" aria-expanded={open} aria-controls={panelId} onClick={() => setExpanded(open ? null : group.id)}>
-              <EquipmentIcon id={group.id} kind={group.kind} />
+              <DeviceHardware id={group.id} title={group.title} compact />
               <span><strong>{group.title}</strong><span>{group.tracks.map(t => t.name).join(' / ')}</span>
                 <span>{group.tracks.length} {group.tracks.length === 1 ? 'pista' : 'pistas'} · {channelLabel}</span></span>
               {open ? <ChevronUp size={16} aria-hidden="true" /> : <ChevronDown size={16} aria-hidden="true" />}
