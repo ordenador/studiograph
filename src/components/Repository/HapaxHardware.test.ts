@@ -40,4 +40,14 @@ describe('Hapax hardware reference', () => {
     expect(svg).toContain('Pantalla de parámetros');
     expect(svg).toContain('Pantalla de menú');
   });
+
+  it('shows both panels together while keeping actions on rear outputs only', () => {
+    const svg = renderToStaticMarkup(createElement(HapaxHardware, { view: 'both', onPortClick: () => {} }));
+    expect([...svg.matchAll(/<svg /g)]).toHaveLength(2);
+    expect(svg).toContain('Hapax · vista superior de referencia');
+    expect(svg).toContain('Hapax · panel trasero, mirando los conectores');
+    expect([...svg.matchAll(/role="button"/g)]).toHaveLength(14);
+    const ids = [...svg.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
 });

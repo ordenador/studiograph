@@ -85,7 +85,6 @@ function Editor({ selection, library, location, onNavigate, onSaved, onDirty }: 
   const [history, setHistory] = useState<(Setup | Device)[]>([]);
   const view = location.view;
   const focusedTrack = location.track;
-  const hardwareView = location.panel;
   const [hardwareTrack, setHardwareTrack] = useState(0);
   const focusedPort = location.port;
   const [definition, setDefinition] = useState<string | null>(null);
@@ -174,21 +173,21 @@ function Editor({ selection, library, location, onNavigate, onSaved, onDirty }: 
       {view === 'tracks' && <>{focusedTrack > 0 && !setup.tracks.some(t => t.number === focusedTrack) && <p className="repo-routing-notes" role="status">La pista {focusedTrack} no existe en la configuración guardada de este setup.</p>}<TrackList setup={setup} library={library} focusedTrack={focusedTrack} onFocusTrack={number => onNavigate({ ...location, track: number })} onChange={changeTracks} onDefinition={setDefinition} /></>}
       {view === 'diagram' && <Suspense fallback={<p className="oconfig-cable-help">Abriendo cableado…</p>}><RepositoryCableEditor setup={setup} library={library} onChange={edit} /></Suspense>}
       {view === 'hardware' && <section className="repo-hardware">
-        <div className="repo-hardware-toolbar"><div><button aria-pressed={hardwareView === 'rear'} onClick={() => onNavigate({ ...location, panel: 'rear' })}>Conexiones</button>
-          <button aria-pressed={hardwareView === 'top'} onClick={() => onNavigate({ ...location, panel: 'top' })}>Vista superior</button></div>
-          {hardwareView === 'rear' && <label>Asignar salida a<select aria-label="Pista para asignar salida" value={hardwareTrack} onChange={e => setHardwareTrack(Number(e.target.value))}>
+        <div className="repo-hardware-toolbar">
+          <label>Asignar salida a<select aria-label="Pista para asignar salida" value={hardwareTrack} onChange={e => setHardwareTrack(Number(e.target.value))}>
             <option value={0}>Solo inspeccionar</option>{setup.tracks.map(t => <option key={t.number} value={t.number}>{t.number}. {t.name}</option>)}
-          </select></label>}</div>
-        <HapaxHardware view={hardwareView} activePorts={setup.tracks.map(t => t.port)} selectedPort={focusedPort} routes={configuredRoutes} onPortClick={p => {
+          </select></label></div>
+        <HapaxHardware view="both" activePorts={setup.tracks.map(t => t.port)} selectedPort={focusedPort} onPortClick={p => {
           onNavigate({ ...location, port: p }); if (hardwareTrack) changeTracks(setup.tracks.map(t => t.number === hardwareTrack ? { ...t, port: p, channel: p.startsWith('CV') || p.startsWith('G') ? 0 : t.channel || 1 } : t));
         }} />
-        {hardwareView === 'rear' && focusedPort && <p>{portLabel(focusedPort)} · {setup.tracks.filter(t => t.port === focusedPort || ((focusedPort.startsWith('CV') || focusedPort.startsWith('G')) && t.port === `CVG${focusedPort.slice(-1)}`)).map(t => `${t.number}. ${t.name}`).join(', ') || 'Sin pistas asignadas'}</p>}
-        {hardwareView === 'rear' && <p className="repo-muted">Selecciona una pista y pulsa una salida para asignarla. Para una pareja CV/Gate, elige CV/Gate en Pistas.</p>}
-        {hardwareView === 'rear' && pendingTracks.length > 0 && <div className="repo-hardware-empty">
+        <p className="repo-muted repo-panel-reference">Pantallas y pads: referencia del modo Step. Bordes de color: salidas configuradas en el setup.</p>
+        {focusedPort && <p>{portLabel(focusedPort)} · {setup.tracks.filter(t => t.port === focusedPort || ((focusedPort.startsWith('CV') || focusedPort.startsWith('G')) && t.port === `CVG${focusedPort.slice(-1)}`)).map(t => `${t.number}. ${t.name}`).join(', ') || 'Sin pistas asignadas'}</p>}
+        <p className="repo-muted">Selecciona una pista y pulsa una salida para asignarla. Para una pareja CV/Gate, elige CV/Gate en Pistas.</p>
+        {pendingTracks.length > 0 && <div className="repo-hardware-empty">
           <p>{pendingTracks.length} {pendingTracks.length === 1 ? 'pista no tiene' : 'pistas no tienen'} salida asignada. {configuredRoutes.length ? 'Solo se muestran los recorridos ya configurados.' : 'Por eso este panel todavía no muestra recorridos hacia los equipos.'}</p>
           <button onClick={() => onNavigate({ ...location, view: 'tracks', track: pendingTracks[0].number })}>Asignar salidas en Pistas</button>
         </div>}
-        {hardwareView === 'rear' && configuredRoutes.length > 0 && <ul className="repo-panel-routes" aria-label="Recorridos configurados">{configuredRoutes.map(r => <li key={`${r.port}:${r.device}`}>
+        {configuredRoutes.length > 0 && <ul className="repo-panel-routes" aria-label="Recorridos configurados">{configuredRoutes.map(r => <li key={`${r.port}:${r.device}`}>
           <strong>{r.label}</strong><span>→ {r.title}</span><span>{r.tracks.map(t => `${t.number}. ${t.name}`).join(' · ')}</span>
           <button onClick={() => onNavigate({ ...location, view: 'tracks', track: r.tracks[0].number })}>Editar pistas</button>
         </li>)}</ul>}

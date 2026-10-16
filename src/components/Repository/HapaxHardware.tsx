@@ -20,7 +20,8 @@ const STEP_REFERENCE_ROW_COLORS = ['#ecea95', '#7bb6ae', '#8fb795', '#bf697e', '
 
 type HapaxHardwareProps = {
   compact?: boolean;
-  view?: 'rear' | 'top';
+  view?: 'rear' | 'top' | 'both';
+  panelOnly?: boolean;
   activePorts?: string[];
   selectedPort?: string;
   routes?: PanelRoute[];
@@ -61,13 +62,22 @@ function ConnectorShape({ kind, color }: { kind: Connector['kind']; color: strin
 }
 
 /** Original vector reference of Hapax. Active means configured in the setup, not live MIDI. */
-export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, compact = false, selectedPort = '', routes = [], patchbay = false, patchInputs = [] }: HapaxHardwareProps) {
+export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, compact = false, panelOnly = false, selectedPort = '', routes = [], patchbay = false, patchInputs = [] }: HapaxHardwareProps) {
   const id = React.useId();
   const [focusedPort, setFocusedPort] = useState<string | null>(null);
   const titleId = `${id}-title`;
   const descriptionId = `${id}-description`;
   const routeRows = Math.ceil(routes.length / 5);
   const rearHeight = patchbay ? 190 : routes.length ? 410 + (routeRows - 1) * 120 : 235;
+
+  if (view === 'both') {
+    return <div className="hapax-panel-pair" role="group" aria-label="Paneles superior y trasero del Hapax">
+      <figure><figcaption>Vista superior</figcaption><HapaxHardware view="top" compact panelOnly /></figure>
+      <figure><figcaption>Panel trasero · mirando los conectores</figcaption>
+        <HapaxHardware view="rear" compact panelOnly activePorts={activePorts} selectedPort={selectedPort} onPortClick={onPortClick} />
+      </figure>
+    </div>;
+  }
 
   if (view === 'top') {
     // Geometry traced from Squarp's frontal packshot, normalized to the chassis:
@@ -87,7 +97,7 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
       <circle cx={x} cy={y} r="17" fill="#1c1c1f" />
     </g>;
     return <div style={{ overflowX: 'auto' }}>
-      <svg viewBox="0 0 1000 585" fontFamily="system-ui, sans-serif" style={{ display: 'block', width: '100%', minWidth: compact ? 0 : 560 }} role="img" aria-labelledby={`${titleId} ${descriptionId}`}>
+      <svg viewBox={panelOnly ? '0 12 1000 555' : '0 0 1000 585'} fontFamily="system-ui, sans-serif" style={{ display: 'block', width: '100%', minWidth: compact || panelOnly ? 0 : 560 }} role="img" aria-labelledby={`${titleId} ${descriptionId}`}>
         <title id={titleId}>Hapax · vista superior de referencia</title>
         <desc id={descriptionId}>Panel con dos pantallas del mismo tamaño, ocho encoders de parámetros y un encoder de menú, dieciséis botones de pista, matriz de ciento veintiocho pads y cuatro teclas triangulares de navegación. Capturas estáticas oficiales del modo Step: parámetros de notas a la izquierda y piano roll a la derecha. Cinco pads muestran los inicios de nota del viewport gris, con los colores por fila de la referencia oficial. Las capturas no representan el proyecto abierto ni actividad MIDI en vivo.</desc>
         <rect x="18" y="12" width="964" height="555" rx="8" fill="#27272a" stroke="#71717a" />
@@ -151,16 +161,16 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
           <path d="M942 464V514L914 489Z"><title>Derecha</title></path>
           <path d="M879 526H930L904.5 497Z"><title>Abajo</title></path>
         </g>
-        {!compact && <text x="500" y="583" textAnchor="middle" fontSize="12" fill="#a1a1aa">Modo Step · capturas de referencia de Squarp · sin conexión en vivo</text>}
+        {!compact && !panelOnly && <text x="500" y="583" textAnchor="middle" fontSize="12" fill="#a1a1aa">Modo Step · capturas de referencia de Squarp · sin conexión en vivo</text>}
       </svg>
     </div>;
   }
 
   return <div style={{ overflowX: 'auto' }}>
-    <svg viewBox={`0 0 1000 ${rearHeight}`} fontFamily="system-ui, sans-serif" style={{ display: 'block', width: '100%', minWidth: 900 }} role="group" aria-labelledby={`${titleId} ${descriptionId}`}>
+    <svg viewBox={panelOnly ? '0 60 1000 120' : `0 0 1000 ${rearHeight}`} fontFamily="system-ui, sans-serif" style={{ display: 'block', width: '100%', minWidth: panelOnly ? 0 : 900 }} role="group" aria-labelledby={`${titleId} ${descriptionId}`}>
       <title id={titleId}>Hapax · panel trasero, mirando los conectores</title>
       <desc id={descriptionId}>Referencia del panel trasero. {patchbay ? 'Las salidas del diseño tienen color. Los puntos inferiores permiten dibujar cables y los superiores recibir retornos.' : 'Las salidas configuradas se distinguen por un borde de color y una marca.'} {onPortClick ? 'Activa una salida con clic, Enter o espacio para seleccionarla en el editor.' : 'Las entradas, alimentación, SD y pedal se muestran como referencia.'} No indica conexión física ni actividad MIDI.</desc>
-      <text x="24" y="27" fill="#e4e4e7" fontSize="15">Panel trasero · mirando los conectores</text>
+      {!panelOnly && <text x="24" y="27" fill="#e4e4e7" fontSize="15">Panel trasero · mirando los conectores</text>}
       <rect x="18" y="64" width="946" height="112" rx="4" fill="#27272a" stroke="#71717a" />
       <g aria-label="Interruptor de alimentación"><title>Interruptor de alimentación</title><circle cx="56" cy="140" r="12" fill="#111113" stroke="#3f3f46" strokeWidth="2" /><circle cx="56" cy="140" r="8" fill="#1c1c1f" /></g>
       <g aria-label="Alimentación 15 V DC"><title>Alimentación 15 V DC</title><rect x="77" y="125" width="24" height="28" fill="#111113" stroke="#3f3f46" /><circle cx="89" cy="138" r="8" fill="#09090b" /><circle cx="89" cy="138" r="2" fill="#a1a1aa" /></g>
@@ -224,7 +234,7 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
           </foreignObject>
         </g>;
       })}
-      {!patchbay && <><text x="24" y={rearHeight - 36} fill="#a1a1aa" fontSize="12">Marca de color = salida configurada en el setup</text>
+      {!patchbay && !panelOnly && <><text x="24" y={rearHeight - 36} fill="#a1a1aa" fontSize="12">Marca de color = salida configurada en el setup</text>
       <text x="24" y={rearHeight - 14} fill="#a1a1aa" fontSize="12">Referencia de conectores · no acredita cableado físico ni actividad MIDI</text></>}
     </svg>
   </div>;
