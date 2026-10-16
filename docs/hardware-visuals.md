@@ -1,5 +1,9 @@
 # Vistas superiores del hardware
 
+Las caras de conexiones, SVG adicionales y catálogo de puertos se documentan
+en [hardware-panels.md](hardware-panels.md). Esa ampliación permite cambiar
+de cara en fichas y cableado, conservando la fase superior descrita aquí.
+
 Revisión: 16 de octubre de 2026. El catálogo visual cubre 14 identificadores
 de equipo, correspondientes a 12 modelos. `fm1-nrpn-test` es una referencia de
 ensayo de una de las dos unidades FM-1, con identidad A/B pendiente.

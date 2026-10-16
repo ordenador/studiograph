@@ -170,7 +170,7 @@ await save('livetrak','Zoom LiveTrak L6max',1000,380,
   repeat(8,i=>circle(39+i*68,219,2,'#79797d')+button(23+i*68,245,32,17,'MUTE','#aaa9a5',dark)+
     (i<4?button(21+i*68,199,35,13,i%2?'48V':'Hi-Z','#a5a9a4',dark):button(21+i*68,199,35,13,i<6?'MONO':'USB','#a5a9a4',dark))+
     circle(39+i*68,325,27,'#8a7459','#bda68a',1.2)+knob(39+i*68,325,23,'','#555559')+
-    text(39+i*68,376,String(i<4?i+1:`${(i-4)*2+5}/${(i-4)*2+6}`),7))+
+    text(39+i*68,376,String(i+1),7))+
   rect(584,13,57,347,'#34305a',1)+['HIGH','FREQ','MID','LOW','AUX1','AUX2','EFX','SUB MIX','PAN','LEVEL'].map((l,i)=>button(591,25+i*33,43,22,l,l==='LEVEL'?orange:'#c7c7c4',dark)).join('')+
   jack(675,35,'MIDI IN')+jack(675,76,'OUT')+repeat(4,i=>button(659,140+i*33,34,23,String(i+1),'#d5a0a1',dark))+knob(676,325,23,'PAD','#8a8a88')+
   repeat(4,c=>jack(737+c*70,48,['AUX','MASTER','MONITOR','SUB'][c],18)+(c<2?jack(737+c*70,108,'',18):''))+

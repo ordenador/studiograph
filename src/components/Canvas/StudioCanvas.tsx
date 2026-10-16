@@ -17,12 +17,15 @@ import '@xyflow/react/dist/style.css';
 import { useStudioStore } from '../../store/useStudioStore';
 import { InstrumentNode } from '../Nodes/InstrumentNode';
 import { HapaxRearNode } from '../Nodes/HapaxRearNode';
+import { HardwarePanelNode } from '../Nodes/HardwarePanelNode';
+import { nodeHardwareId } from '../Repository/hardwareVisuals';
+import { conflictingUsbEdges, physicalPortsCompatible } from '../Repository/hardwarePanels';
 import { CustomEdge } from './CustomEdge';
 import type { InstrumentPreset, InstrumentNodeData } from '../../types';
 import { EDGE_COLORS } from '../../data/defaultNodes';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ReactFlow NodeTypes variance requires this cast
-const nodeTypes: NodeTypes = { instrument: InstrumentNode as any, hapaxRear: HapaxRearNode as any };
+const nodeTypes: NodeTypes = { instrument: InstrumentNode as any, hapaxRear: HapaxRearNode as any, hardwarePanel: HardwarePanelNode as any };
 
 const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
@@ -76,6 +79,7 @@ function StudioCanvasInner() {
 
       // Types must match
       if (sourcePort.type !== targetPort.type) return false;
+      if (!physicalPortsCompatible(nodeHardwareId(source, sourceData), sourcePort, nodeHardwareId(target, targetData), targetPort)) return false;
 
       // Allow cycles - just show warning, don't block
       // (MIDI feedback loops are sometimes intentional for recording/thru setups)
@@ -98,6 +102,8 @@ function StudioCanvasInner() {
       const sourceData = sourceNode.data as InstrumentNodeData;
       const sourcePort = sourceData.outputs.find((p) => p.id === sourceHandle);
       if (!sourcePort) return;
+
+      if (sourcePort.type === 'usb') for (const id of conflictingUsbEdges(nodes, edges, connection)) removeEdge(id);
 
       // Remove any existing connection to this target handle (replace behavior)
       const existingTargetEdge = edges.find(
@@ -195,7 +201,7 @@ function StudioCanvasInner() {
   return (
     <div ref={reactFlowWrapper} className="oconfig-canvas flex-1 h-full">
       <ReactFlow
-        nodes={nodes.map(n => ({ ...n, type: n.data.isHapax ? 'hapaxRear' : 'instrument' })) as Node[]}
+        nodes={nodes.map(n => ({ ...n, type: n.data.isHapax ? 'hapaxRear' : nodeHardwareId(n.id, n.data) ? 'hardwarePanel' : 'instrument' })) as Node[]}
         edges={styledEdges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}

@@ -1,0 +1,2422 @@
+{
+  "version": 1,
+  "orientation": "Vista directa de cada cara. Rear = borde alejado del intérprete; front = borde próximo. Coordenadas SVG, no dimensiones físicas.",
+  "aliases": {
+    "fm1-a": "fm1",
+    "fm1-b": "fm1",
+    "fm1-nrpn-test": "fm1"
+  },
+  "models": {
+    "op1-field": {
+      "name": "OP-1 field",
+      "fill": "#bfc5be",
+      "ink": "#29342e",
+      "defaultFace": "right",
+      "faces": {
+        "rear": {
+          "width": 1000,
+          "height": 120,
+          "label": "Trasera",
+          "note": "Los conectores están en el lateral derecho.",
+          "asset": "op1-field-rear-panel"
+        },
+        "right": {
+          "width": 750,
+          "height": 160,
+          "label": "Lateral derecho",
+          "note": "Mirando directamente el lateral: USB-C, entrada, salida y el interruptor en el extremo.",
+          "asset": "op1-field-right-panel"
+        },
+        "top": {
+          "width": 1000,
+          "height": 360,
+          "label": "Superior",
+          "note": "",
+          "asset": "op1-field"
+        }
+      },
+      "connectors": [
+        {
+          "id": "usb",
+          "label": "USB",
+          "face": "right",
+          "x": 225,
+          "y": 95,
+          "kind": "usb-c",
+          "signal": "usb",
+          "direction": "duplex",
+          "detail": "USB audio/MIDI, host y device · carga",
+          "usbRole": "dual"
+        },
+        {
+          "id": "audio-in",
+          "label": "AUDIO IN",
+          "face": "right",
+          "x": 385,
+          "y": 95,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "3,5 mm TRS · estéreo"
+        },
+        {
+          "id": "audio-out",
+          "label": "AUDIO OUT",
+          "face": "right",
+          "x": 545,
+          "y": 95,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "3,5 mm TRS · estéreo / auriculares"
+        },
+        {
+          "id": "switch",
+          "label": "POWER",
+          "face": "right",
+          "x": 704,
+          "y": 110,
+          "kind": "switch",
+          "signal": "mechanical",
+          "direction": "none",
+          "detail": ""
+        }
+      ],
+      "sources": [
+        {
+          "title": "Manual · hardware / right side / power on",
+          "url": "https://teenage.engineering/guides/op-1#hardware"
+        }
+      ],
+      "note": ""
+    },
+    "fm1": {
+      "name": "M-VAVE FM-1",
+      "fill": "#343638",
+      "ink": "#e3e2da",
+      "defaultFace": "rear",
+      "faces": {
+        "rear": {
+          "width": 650,
+          "height": 170,
+          "label": "Trasera",
+          "note": "",
+          "asset": "fm1-rear-panel"
+        },
+        "top": {
+          "width": 650,
+          "height": 390,
+          "label": "Superior",
+          "note": "",
+          "asset": "fm1"
+        }
+      },
+      "connectors": [
+        {
+          "id": "audio-out",
+          "label": "AUDIO OUT",
+          "face": "rear",
+          "x": 85,
+          "y": 103,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "3,5 mm TRS · estéreo / auriculares"
+        },
+        {
+          "id": "midi-in",
+          "label": "MIDI IN",
+          "face": "rear",
+          "x": 245,
+          "y": 103,
+          "kind": "jack-35",
+          "signal": "midi",
+          "direction": "input",
+          "detail": "MIDI TRS de 3,5 mm · el manual no especifica tipo A/B"
+        },
+        {
+          "id": "usb",
+          "label": "USB",
+          "face": "rear",
+          "x": 405,
+          "y": 103,
+          "kind": "usb-c",
+          "signal": "usb",
+          "direction": "duplex",
+          "detail": "USB MIDI · alimentación",
+          "usbRole": "device"
+        },
+        {
+          "id": "switch",
+          "label": "POWER",
+          "face": "rear",
+          "x": 555,
+          "y": 103,
+          "kind": "button",
+          "signal": "mechanical",
+          "direction": "none",
+          "detail": ""
+        }
+      ],
+      "sources": [
+        {
+          "title": "Manual original · panel trasero, pág. 14 impresa",
+          "url": "https://manualf.oss-cn-hongkong.aliyuncs.com/manual/MIDI-KEYBOARD/FM-1-manual.pdf"
+        }
+      ],
+      "note": "Dibujo común para unidades A/B y referencia de ensayo; no implica firmware ni montaje físico cotejado."
+    },
+    "keystep-32": {
+      "name": "KeyStep 32 mk2",
+      "fill": "#dadbd4",
+      "ink": "#242a27",
+      "defaultFace": "rear",
+      "faces": {
+        "rear": {
+          "width": 960,
+          "height": 185,
+          "label": "Trasera",
+          "note": "",
+          "asset": "keystep-32-rear-panel"
+        },
+        "top": {
+          "width": 960,
+          "height": 300,
+          "label": "Superior",
+          "note": "",
+          "asset": "keystep-32"
+        }
+      },
+      "connectors": [
+        {
+          "id": "mod-2",
+          "label": "MOD 2",
+          "face": "rear",
+          "x": 395,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "3,5 mm · CV/Gate"
+        },
+        {
+          "id": "mod-1",
+          "label": "MOD 1",
+          "face": "rear",
+          "x": 423,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "3,5 mm · CV/Gate"
+        },
+        {
+          "id": "gate",
+          "label": "GATE",
+          "face": "rear",
+          "x": 451,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "3,5 mm · CV/Gate"
+        },
+        {
+          "id": "pitch",
+          "label": "PITCH",
+          "face": "rear",
+          "x": 480,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "3,5 mm · CV/Gate"
+        },
+        {
+          "id": "sustain",
+          "label": "SUSTAIN",
+          "face": "rear",
+          "x": 522,
+          "y": 108,
+          "kind": "jack-635",
+          "signal": "control",
+          "direction": "input",
+          "detail": "Pedal sustain / expresión · 6,35 mm TRS"
+        },
+        {
+          "id": "sync-in",
+          "label": "SYNC IN",
+          "face": "rear",
+          "x": 576,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Reloj analógico de 3,5 mm"
+        },
+        {
+          "id": "sync-out",
+          "label": "SYNC OUT",
+          "face": "rear",
+          "x": 604,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Reloj analógico de 3,5 mm"
+        },
+        {
+          "id": "midi-in",
+          "label": "MIDI IN",
+          "face": "rear",
+          "x": 666,
+          "y": 108,
+          "kind": "din-5",
+          "signal": "midi",
+          "direction": "input",
+          "detail": "DIN de 5 pines"
+        },
+        {
+          "id": "midi-out",
+          "label": "MIDI OUT",
+          "face": "rear",
+          "x": 722,
+          "y": 108,
+          "kind": "din-5",
+          "signal": "midi",
+          "direction": "output",
+          "detail": "DIN de 5 pines"
+        },
+        {
+          "id": "usb",
+          "label": "USB",
+          "face": "rear",
+          "x": 802,
+          "y": 108,
+          "kind": "usb-c",
+          "signal": "usb",
+          "direction": "duplex",
+          "detail": "USB MIDI · alimentación",
+          "usbRole": "device"
+        },
+        {
+          "id": "switch",
+          "label": "POWER",
+          "face": "rear",
+          "x": 875,
+          "y": 108,
+          "kind": "switch",
+          "signal": "mechanical",
+          "direction": "none",
+          "detail": ""
+        }
+      ],
+      "sources": [
+        {
+          "title": "Fotografía trasera del fabricante",
+          "url": "https://medias.arturia.net/images/products/keystep-mk2/ow-keystep-back.jpg"
+        },
+        {
+          "title": "Catálogo del fabricante · mk2",
+          "url": "https://www.arturia.com/products/hybrid-synths/keystep-mk2/keystep-32-mk2"
+        }
+      ],
+      "note": "Modelo mk2: cuatro salidas CV, USB-C y sin entrada de alimentación DC separada."
+    },
+    "keystep-37": {
+      "name": "KeyStep 37 mk2",
+      "fill": "#dadbd4",
+      "ink": "#242a27",
+      "defaultFace": "rear",
+      "faces": {
+        "rear": {
+          "width": 1130,
+          "height": 185,
+          "label": "Trasera",
+          "note": "",
+          "asset": "keystep-37-rear-panel"
+        },
+        "top": {
+          "width": 1130,
+          "height": 300,
+          "label": "Superior",
+          "note": "",
+          "asset": "keystep-37"
+        }
+      },
+      "connectors": [
+        {
+          "id": "mod-2",
+          "label": "MOD 2",
+          "face": "rear",
+          "x": 390,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "3,5 mm · CV/Gate"
+        },
+        {
+          "id": "mod-1",
+          "label": "MOD 1",
+          "face": "rear",
+          "x": 427,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "3,5 mm · CV/Gate"
+        },
+        {
+          "id": "gate",
+          "label": "GATE",
+          "face": "rear",
+          "x": 464,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "3,5 mm · CV/Gate"
+        },
+        {
+          "id": "pitch",
+          "label": "PITCH",
+          "face": "rear",
+          "x": 501,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "3,5 mm · CV/Gate"
+        },
+        {
+          "id": "sustain",
+          "label": "SUSTAIN",
+          "face": "rear",
+          "x": 555,
+          "y": 108,
+          "kind": "jack-635",
+          "signal": "control",
+          "direction": "input",
+          "detail": "Pedal sustain / expresión · 6,35 mm TRS"
+        },
+        {
+          "id": "sync-in",
+          "label": "SYNC IN",
+          "face": "rear",
+          "x": 627,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Reloj analógico de 3,5 mm"
+        },
+        {
+          "id": "sync-out",
+          "label": "SYNC OUT",
+          "face": "rear",
+          "x": 664,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Reloj analógico de 3,5 mm"
+        },
+        {
+          "id": "midi-in",
+          "label": "MIDI IN",
+          "face": "rear",
+          "x": 745,
+          "y": 108,
+          "kind": "din-5",
+          "signal": "midi",
+          "direction": "input",
+          "detail": "DIN de 5 pines"
+        },
+        {
+          "id": "midi-out",
+          "label": "MIDI OUT",
+          "face": "rear",
+          "x": 819,
+          "y": 108,
+          "kind": "din-5",
+          "signal": "midi",
+          "direction": "output",
+          "detail": "DIN de 5 pines"
+        },
+        {
+          "id": "usb",
+          "label": "USB",
+          "face": "rear",
+          "x": 923,
+          "y": 108,
+          "kind": "usb-c",
+          "signal": "usb",
+          "direction": "duplex",
+          "detail": "USB MIDI · alimentación",
+          "usbRole": "device"
+        },
+        {
+          "id": "switch",
+          "label": "POWER",
+          "face": "rear",
+          "x": 1020,
+          "y": 108,
+          "kind": "switch",
+          "signal": "mechanical",
+          "direction": "none",
+          "detail": ""
+        }
+      ],
+      "sources": [
+        {
+          "title": "Fotografía trasera del fabricante",
+          "url": "https://medias.arturia.net/images/products/keystep-37-mk2/keystep-37-mk2-back.jpg"
+        },
+        {
+          "title": "Catálogo del fabricante · mk2",
+          "url": "https://www.arturia.com/products/hybrid-synths/keystep-mk2/keystep-37-mk2"
+        }
+      ],
+      "note": "Modelo mk2: cuatro salidas CV, USB-C y sin entrada de alimentación DC separada."
+    },
+    "ep-133": {
+      "name": "EP-133 K.O. II",
+      "fill": "#c5c6bf",
+      "ink": "#242a27",
+      "defaultFace": "rear",
+      "faces": {
+        "rear": {
+          "width": 1000,
+          "height": 170,
+          "label": "Trasera",
+          "note": "Borde superior del equipo al tocarlo; el fabricante lo llama “top side”. Mirando los conectores, izquierda/derecha se invierten respecto del teclado.",
+          "asset": "ep-133-rear-panel"
+        },
+        "top": {
+          "width": 360,
+          "height": 500,
+          "label": "Superior",
+          "note": "",
+          "asset": "ep-133"
+        }
+      },
+      "connectors": [
+        {
+          "id": "switch",
+          "label": "POWER",
+          "face": "rear",
+          "x": 85,
+          "y": 108,
+          "kind": "switch",
+          "signal": "mechanical",
+          "direction": "none",
+          "detail": ""
+        },
+        {
+          "id": "usb",
+          "label": "USB",
+          "face": "rear",
+          "x": 225,
+          "y": 108,
+          "kind": "usb-c",
+          "signal": "usb",
+          "direction": "duplex",
+          "detail": "USB MIDI · alimentación · audio USB según versión de OS",
+          "usbRole": "device"
+        },
+        {
+          "id": "midi-out",
+          "label": "MIDI OUT",
+          "face": "rear",
+          "x": 455,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "midi",
+          "direction": "output",
+          "detail": "MIDI TRS de 3,5 mm"
+        },
+        {
+          "id": "midi-in",
+          "label": "MIDI IN",
+          "face": "rear",
+          "x": 500,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "midi",
+          "direction": "input",
+          "detail": "MIDI TRS de 3,5 mm"
+        },
+        {
+          "id": "sync-out",
+          "label": "SYNC OUT",
+          "face": "rear",
+          "x": 545,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Reloj analógico · 3,5 mm"
+        },
+        {
+          "id": "sync-in",
+          "label": "SYNC IN",
+          "face": "rear",
+          "x": 590,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Reloj analógico · 3,5 mm"
+        },
+        {
+          "id": "audio-in",
+          "label": "INPUT",
+          "face": "rear",
+          "x": 735,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "3,5 mm TRS · estéreo · aro naranja"
+        },
+        {
+          "id": "audio-out",
+          "label": "OUTPUT",
+          "face": "rear",
+          "x": 915,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "3,5 mm TRS · estéreo · aro blanco"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Manual · hardware overview",
+          "url": "https://teenage.engineering/guides/ep-133/hardware-overview"
+        },
+        {
+          "title": "Diagrama de conectores del fabricante",
+          "url": "https://assets.teenage.engineering/_img/655cd58ae77e331eee90491a_opt.svg"
+        }
+      ],
+      "note": ""
+    },
+    "ep-136": {
+      "name": "EP-136 K.O.-sidekick",
+      "fill": "#bec3ba",
+      "ink": "#242a27",
+      "defaultFace": "rear",
+      "faces": {
+        "rear": {
+          "width": 850,
+          "height": 170,
+          "label": "Trasera",
+          "note": "Borde superior al tocarlo · mirada directa a los conectores.",
+          "asset": "ep-136-rear-panel"
+        },
+        "front": {
+          "width": 850,
+          "height": 140,
+          "label": "Frontal · auriculares",
+          "note": "Borde próximo al usuario al tocarlo.",
+          "asset": "ep-136-front-panel"
+        },
+        "top": {
+          "width": 290,
+          "height": 590,
+          "label": "Superior",
+          "note": "",
+          "asset": "ep-136"
+        }
+      },
+      "connectors": [
+        {
+          "id": "switch",
+          "label": "POWER",
+          "face": "rear",
+          "x": 80,
+          "y": 108,
+          "kind": "switch",
+          "signal": "mechanical",
+          "direction": "none",
+          "detail": ""
+        },
+        {
+          "id": "usb",
+          "label": "USB",
+          "face": "rear",
+          "x": 220,
+          "y": 108,
+          "kind": "usb-c",
+          "signal": "usb",
+          "direction": "duplex",
+          "detail": "USB MIDI, audio 8 entradas / 4 salidas · alimentación",
+          "usbRole": "device"
+        },
+        {
+          "id": "ch-2",
+          "label": "CH 2",
+          "face": "rear",
+          "x": 400,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "3,5 mm TRS · estéreo · aro naranja"
+        },
+        {
+          "id": "ch-1",
+          "label": "CH 1",
+          "face": "rear",
+          "x": 470,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "3,5 mm TRS · estéreo · aro naranja"
+        },
+        {
+          "id": "aux",
+          "label": "AUX",
+          "face": "rear",
+          "x": 540,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "3,5 mm TRS · estéreo · aro naranja"
+        },
+        {
+          "id": "audio-out",
+          "label": "OUTPUT",
+          "face": "rear",
+          "x": 745,
+          "y": 108,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "3,5 mm TRS · estéreo"
+        },
+        {
+          "id": "phones",
+          "label": "PHONES",
+          "face": "front",
+          "x": 695,
+          "y": 83,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "3,5 mm TRS · auriculares estéreo"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Manual · hardware overview",
+          "url": "https://teenage.engineering/guides/ep-136/hardware-overview"
+        },
+        {
+          "title": "Borde superior del fabricante",
+          "url": "https://assets.teenage.engineering/_img/69fc4870c956bd24033c329d_opt.svg"
+        },
+        {
+          "title": "Borde de auriculares",
+          "url": "https://assets.teenage.engineering/_img/69dde4edfb4f0d7572eddd40_opt.svg"
+        }
+      ],
+      "note": ""
+    },
+    "quad-cortex": {
+      "name": "Quad Cortex · original",
+      "fill": "#44484a",
+      "ink": "#ecece5",
+      "defaultFace": "rear",
+      "faces": {
+        "rear": {
+          "width": 1200,
+          "height": 235,
+          "label": "Trasera",
+          "note": "",
+          "asset": "quad-cortex-rear-panel"
+        },
+        "top": {
+          "width": 700,
+          "height": 470,
+          "label": "Superior",
+          "note": "",
+          "asset": "quad-cortex"
+        }
+      },
+      "connectors": [
+        {
+          "id": "input-1",
+          "label": "INPUT 1",
+          "face": "rear",
+          "x": 72,
+          "y": 142,
+          "kind": "combo",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "XLR / 6,35 mm combo · mic/line/instrument"
+        },
+        {
+          "id": "input-2",
+          "label": "INPUT 2",
+          "face": "rear",
+          "x": 182,
+          "y": 142,
+          "kind": "combo",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "XLR / 6,35 mm combo · mic/line/instrument"
+        },
+        {
+          "id": "send-1",
+          "label": "SEND 1",
+          "face": "rear",
+          "x": 270,
+          "y": 100,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Audio · 6,35 mm"
+        },
+        {
+          "id": "send-2",
+          "label": "SEND 2",
+          "face": "rear",
+          "x": 270,
+          "y": 174,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Audio · 6,35 mm"
+        },
+        {
+          "id": "return-1",
+          "label": "RETURN 1",
+          "face": "rear",
+          "x": 345,
+          "y": 100,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Audio · 6,35 mm"
+        },
+        {
+          "id": "return-2",
+          "label": "RETURN 2",
+          "face": "rear",
+          "x": 345,
+          "y": 174,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Audio · 6,35 mm"
+        },
+        {
+          "id": "out-3",
+          "label": "OUT 3/L",
+          "face": "rear",
+          "x": 420,
+          "y": 100,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Audio · 6,35 mm"
+        },
+        {
+          "id": "out-4",
+          "label": "OUT 4/R",
+          "face": "rear",
+          "x": 420,
+          "y": 174,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Audio · 6,35 mm"
+        },
+        {
+          "id": "capture",
+          "label": "CAPTURE",
+          "face": "rear",
+          "x": 495,
+          "y": 100,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Salida dedicada a Neural Capture · 6,35 mm"
+        },
+        {
+          "id": "phones",
+          "label": "PHONES",
+          "face": "rear",
+          "x": 495,
+          "y": 174,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Auriculares estéreo · 6,35 mm TRS"
+        },
+        {
+          "id": "out-1",
+          "label": "OUT 1/L",
+          "face": "rear",
+          "x": 590,
+          "y": 142,
+          "kind": "xlr-m",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "XLR balanceado"
+        },
+        {
+          "id": "out-2",
+          "label": "OUT 2/R",
+          "face": "rear",
+          "x": 700,
+          "y": 142,
+          "kind": "xlr-m",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "XLR balanceado"
+        },
+        {
+          "id": "midi-in",
+          "label": "MIDI IN",
+          "face": "rear",
+          "x": 805,
+          "y": 142,
+          "kind": "din-5",
+          "signal": "midi",
+          "direction": "input",
+          "detail": "DIN de 5 pines"
+        },
+        {
+          "id": "midi-out",
+          "label": "THRU/OUT",
+          "face": "rear",
+          "x": 905,
+          "y": 142,
+          "kind": "din-5",
+          "signal": "midi",
+          "direction": "output",
+          "detail": "DIN de 5 pines · función según configuración"
+        },
+        {
+          "id": "exp-1",
+          "label": "EXP 1",
+          "face": "rear",
+          "x": 995,
+          "y": 100,
+          "kind": "jack-635",
+          "signal": "control",
+          "direction": "input",
+          "detail": "Pedal de expresión · 6,35 mm TRS"
+        },
+        {
+          "id": "exp-2",
+          "label": "EXP 2",
+          "face": "rear",
+          "x": 995,
+          "y": 174,
+          "kind": "jack-635",
+          "signal": "control",
+          "direction": "input",
+          "detail": "Pedal de expresión · 6,35 mm TRS"
+        },
+        {
+          "id": "usb",
+          "label": "USB",
+          "face": "rear",
+          "x": 1080,
+          "y": 174,
+          "kind": "usb-b",
+          "signal": "usb",
+          "direction": "duplex",
+          "detail": "USB tipo B del Quad Cortex original · audio/MIDI device",
+          "usbRole": "device"
+        },
+        {
+          "id": "power",
+          "label": "12V DC · 3A · centro negativo",
+          "face": "rear",
+          "x": 1150,
+          "y": 174,
+          "kind": "dc",
+          "signal": "power",
+          "direction": "input",
+          "detail": "12V DC · 3A · centro negativo"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Manual · diagrama del Quad Cortex original",
+          "url": "https://neuraldsp.com/manual/quad-cortex"
+        },
+        {
+          "title": "Diagrama oficial de las tres caras",
+          "url": "https://images.ctfassets.net/8puu65w27ud0/3CBFXZiqvuUgrRBfFpoxup/1c8e59e5c8c9fb1ede0f4b7d3143de9e/qc-overview-001.svg"
+        }
+      ],
+      "note": "Corresponde al Quad Cortex original, con USB-B. No al Quad Cortex mini."
+    },
+    "0-coast": {
+      "name": "Make Noise 0-Coast",
+      "fill": "#242628",
+      "ink": "#e1e3d8",
+      "defaultFace": "top",
+      "faces": {
+        "top": {
+          "width": 700,
+          "height": 420,
+          "label": "Superior · patch",
+          "note": "",
+          "background": "0-coast",
+          "asset": "0-coast-top-panel"
+        },
+        "rear": {
+          "width": 700,
+          "height": 130,
+          "label": "Trasera",
+          "note": "Sin conectores traseros documentados. Patch arriba; alimentación a la izquierda.",
+          "asset": "0-coast-rear-panel"
+        },
+        "left": {
+          "width": 420,
+          "height": 150,
+          "label": "Lateral izquierdo",
+          "note": "",
+          "asset": "0-coast-left-panel"
+        }
+      },
+      "connectors": [
+        {
+          "id": "midi-in",
+          "label": "MIDI IN",
+          "face": "top",
+          "x": 46.48,
+          "y": 175.39,
+          "kind": "jack-35",
+          "signal": "midi",
+          "direction": "input",
+          "detail": "MIDI TRS 3,5 mm · usar adaptador indicado por Make Noise"
+        },
+        {
+          "id": "tempo",
+          "label": "TEMPO",
+          "face": "top",
+          "x": 146.97,
+          "y": 108.19,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "clock",
+          "label": "CLOCK",
+          "face": "top",
+          "x": 146.97,
+          "y": 150.53,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "random",
+          "label": "RANDOM",
+          "face": "top",
+          "x": 146.97,
+          "y": 192.19,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "math-in-1",
+          "label": "MATH IN 1",
+          "face": "top",
+          "x": 110.06,
+          "y": 235.2,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "math-in-2",
+          "label": "MATH IN 2",
+          "face": "top",
+          "x": 150.39,
+          "y": 235.2,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "ext-cv",
+          "label": "EXT CV",
+          "face": "top",
+          "x": 33.5,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "ext-gate",
+          "label": "EXT GATE",
+          "face": "top",
+          "x": 72.46,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "math-out-1",
+          "label": "MATH OUT 1",
+          "face": "top",
+          "x": 128.52,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "math-out-2",
+          "label": "MATH OUT 2",
+          "face": "top",
+          "x": 169.53,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "triangle",
+          "label": "TRIANGLE",
+          "face": "top",
+          "x": 224.22,
+          "y": 62.5,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Audio modular · 3,5 mm · hasta 10 Vpp"
+        },
+        {
+          "id": "square",
+          "label": "SQUARE",
+          "face": "top",
+          "x": 265.92,
+          "y": 62.5,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Audio modular · 3,5 mm · hasta 10 Vpp"
+        },
+        {
+          "id": "pitch",
+          "label": "1V/OCT",
+          "face": "top",
+          "x": 218.75,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "lin-fm",
+          "label": "LIN FM",
+          "face": "top",
+          "x": 261.13,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "overtone",
+          "label": "OVERTONE",
+          "face": "top",
+          "x": 308.3,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "multiply",
+          "label": "MULTIPLY",
+          "face": "top",
+          "x": 354.79,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "slope-time",
+          "label": "SLOPE TIME",
+          "face": "top",
+          "x": 408.11,
+          "y": 315.84,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "slope-eoc",
+          "label": "SLOPE EOC",
+          "face": "top",
+          "x": 447.07,
+          "y": 315.84,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "slope-trigger",
+          "label": "SLOPE TRIG",
+          "face": "top",
+          "x": 407.42,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "slope-out",
+          "label": "SLOPE OUT",
+          "face": "top",
+          "x": 447.07,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "contour-decay",
+          "label": "DECAY CV",
+          "face": "top",
+          "x": 496.29,
+          "y": 315.84,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "contour-gate",
+          "label": "CONTOUR GATE",
+          "face": "top",
+          "x": 496.29,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "contour-eon",
+          "label": "CONTOUR EON",
+          "face": "top",
+          "x": 536.62,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "contour-out",
+          "label": "CONTOUR OUT",
+          "face": "top",
+          "x": 576.27,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "balance-in",
+          "label": "EXT AUDIO",
+          "face": "top",
+          "x": 596.09,
+          "y": 62.5,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Audio modular · 3,5 mm · hasta 10 Vpp"
+        },
+        {
+          "id": "balance-cv",
+          "label": "BALANCE CV",
+          "face": "top",
+          "x": 667.87,
+          "y": 62.5,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "line-out",
+          "label": "LINE/PHONES",
+          "face": "top",
+          "x": 667.87,
+          "y": 315.84,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "3,5 mm TRS · línea / auriculares · 3 Vpp"
+        },
+        {
+          "id": "dynamics-cv",
+          "label": "DYNAMICS CV",
+          "face": "top",
+          "x": 620.7,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch analógico · 3,5 mm"
+        },
+        {
+          "id": "dynamics-out",
+          "label": "DYNAMICS OUT",
+          "face": "top",
+          "x": 663.09,
+          "y": 355.49,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Audio modular · 3,5 mm · hasta 10 Vpp"
+        },
+        {
+          "id": "power",
+          "label": "15V DC · centro positivo · 2,1 mm",
+          "face": "left",
+          "x": 205,
+          "y": 92,
+          "kind": "dc",
+          "signal": "power",
+          "direction": "input",
+          "detail": "15V DC · centro positivo · 2,1 mm"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Manual original · panel, funciones y alimentación",
+          "url": "https://www.makenoisemusic.com/wp-content/uploads/2024/03/0-coast_manual.pdf"
+        }
+      ],
+      "note": ""
+    },
+    "spectravox": {
+      "name": "Moog Spectravox",
+      "fill": "#19191b",
+      "ink": "#e3e2da",
+      "defaultFace": "top",
+      "faces": {
+        "top": {
+          "width": 960,
+          "height": 410,
+          "label": "Superior · patch",
+          "note": "",
+          "background": "spectravox",
+          "asset": "spectravox-top-panel"
+        },
+        "rear": {
+          "width": 960,
+          "height": 180,
+          "label": "Trasera",
+          "note": "",
+          "asset": "spectravox-rear-panel"
+        }
+      },
+      "connectors": [
+        {
+          "id": "program-combo",
+          "label": "PROGRAM INPUT",
+          "face": "top",
+          "x": 74,
+          "y": 78,
+          "kind": "combo",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Combo XLR / 6,35 mm · programa mic/line"
+        },
+        {
+          "id": "program-in",
+          "label": "PROGRAM",
+          "face": "top",
+          "x": 873,
+          "y": 57,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "vca-out",
+          "label": "VCA",
+          "face": "top",
+          "x": 916,
+          "y": 57,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "carrier",
+          "label": "CARRIER",
+          "face": "top",
+          "x": 873,
+          "y": 99,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "vca-cv",
+          "label": "VCA CV",
+          "face": "top",
+          "x": 916,
+          "y": 99,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "pitch",
+          "label": "1V/OCT",
+          "face": "top",
+          "x": 873,
+          "y": 141,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "vco",
+          "label": "VCO",
+          "face": "top",
+          "x": 916,
+          "y": 141,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "pwm",
+          "label": "VCO PWM",
+          "face": "top",
+          "x": 873,
+          "y": 183,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "noise",
+          "label": "NOISE",
+          "face": "top",
+          "x": 916,
+          "y": 183,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "lfo-rate",
+          "label": "LFO RATE",
+          "face": "top",
+          "x": 873,
+          "y": 225,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "lfo",
+          "label": "LFO",
+          "face": "top",
+          "x": 916,
+          "y": 225,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "trigger",
+          "label": "TRIGGER",
+          "face": "top",
+          "x": 873,
+          "y": 267,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "eg",
+          "label": "EG",
+          "face": "top",
+          "x": 916,
+          "y": 267,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "shift",
+          "label": "SHIFT",
+          "face": "top",
+          "x": 873,
+          "y": 309,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "hold",
+          "label": "HOLD GATE",
+          "face": "top",
+          "x": 916,
+          "y": 309,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "program-out",
+          "label": "PROGRAM",
+          "face": "top",
+          "x": 873,
+          "y": 351,
+          "kind": "jack-35",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "program-env",
+          "label": "PROG ENV F",
+          "face": "top",
+          "x": 916,
+          "y": 351,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Patch 3,5 mm · niveles según manual"
+        },
+        {
+          "id": "band-1-cv",
+          "label": "1 VCA CV",
+          "face": "top",
+          "x": 159,
+          "y": 308,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Control de amplitud de la banda"
+        },
+        {
+          "id": "band-1-env",
+          "label": "1 ENV F",
+          "face": "top",
+          "x": 159,
+          "y": 354,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Seguidor de envolvente de la banda"
+        },
+        {
+          "id": "band-2-cv",
+          "label": "2 VCA CV",
+          "face": "top",
+          "x": 221,
+          "y": 308,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Control de amplitud de la banda"
+        },
+        {
+          "id": "band-2-env",
+          "label": "2 ENV F",
+          "face": "top",
+          "x": 221,
+          "y": 354,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Seguidor de envolvente de la banda"
+        },
+        {
+          "id": "band-3-cv",
+          "label": "3 VCA CV",
+          "face": "top",
+          "x": 283,
+          "y": 308,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Control de amplitud de la banda"
+        },
+        {
+          "id": "band-3-env",
+          "label": "3 ENV F",
+          "face": "top",
+          "x": 283,
+          "y": 354,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Seguidor de envolvente de la banda"
+        },
+        {
+          "id": "band-4-cv",
+          "label": "4 VCA CV",
+          "face": "top",
+          "x": 345,
+          "y": 308,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Control de amplitud de la banda"
+        },
+        {
+          "id": "band-4-env",
+          "label": "4 ENV F",
+          "face": "top",
+          "x": 345,
+          "y": 354,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Seguidor de envolvente de la banda"
+        },
+        {
+          "id": "band-5-cv",
+          "label": "5 VCA CV",
+          "face": "top",
+          "x": 407,
+          "y": 308,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Control de amplitud de la banda"
+        },
+        {
+          "id": "band-5-env",
+          "label": "5 ENV F",
+          "face": "top",
+          "x": 407,
+          "y": 354,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Seguidor de envolvente de la banda"
+        },
+        {
+          "id": "band-6-cv",
+          "label": "6 VCA CV",
+          "face": "top",
+          "x": 469,
+          "y": 308,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Control de amplitud de la banda"
+        },
+        {
+          "id": "band-6-env",
+          "label": "6 ENV F",
+          "face": "top",
+          "x": 469,
+          "y": 354,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Seguidor de envolvente de la banda"
+        },
+        {
+          "id": "band-7-cv",
+          "label": "7 VCA CV",
+          "face": "top",
+          "x": 531,
+          "y": 308,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Control de amplitud de la banda"
+        },
+        {
+          "id": "band-7-env",
+          "label": "7 ENV F",
+          "face": "top",
+          "x": 531,
+          "y": 354,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Seguidor de envolvente de la banda"
+        },
+        {
+          "id": "band-8-cv",
+          "label": "8 VCA CV",
+          "face": "top",
+          "x": 593,
+          "y": 308,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Control de amplitud de la banda"
+        },
+        {
+          "id": "band-8-env",
+          "label": "8 ENV F",
+          "face": "top",
+          "x": 593,
+          "y": 354,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Seguidor de envolvente de la banda"
+        },
+        {
+          "id": "band-9-cv",
+          "label": "9 VCA CV",
+          "face": "top",
+          "x": 655,
+          "y": 308,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Control de amplitud de la banda"
+        },
+        {
+          "id": "band-9-env",
+          "label": "9 ENV F",
+          "face": "top",
+          "x": 655,
+          "y": 354,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Seguidor de envolvente de la banda"
+        },
+        {
+          "id": "band-10-cv",
+          "label": "10 VCA CV",
+          "face": "top",
+          "x": 717,
+          "y": 308,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": "Control de amplitud de la banda"
+        },
+        {
+          "id": "band-10-env",
+          "label": "10 ENV F",
+          "face": "top",
+          "x": 717,
+          "y": 354,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": "Seguidor de envolvente de la banda"
+        },
+        {
+          "id": "audio-out",
+          "label": "AUDIO OUT",
+          "face": "rear",
+          "x": 755,
+          "y": 111,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "6,35 mm TRS · línea mono / auriculares"
+        },
+        {
+          "id": "power",
+          "label": "12V DC · centro positivo",
+          "face": "rear",
+          "x": 846,
+          "y": 111,
+          "kind": "dc",
+          "signal": "power",
+          "direction": "input",
+          "detail": "12V DC · centro positivo"
+        },
+        {
+          "id": "lock",
+          "label": "LOCK",
+          "face": "rear",
+          "x": 917,
+          "y": 111,
+          "kind": "slot",
+          "signal": "mechanical",
+          "direction": "none",
+          "detail": "Anclaje Kensington"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Descargas del fabricante · Spectravox",
+          "url": "https://www.moogmusic.com/downloads/?product=Spectravox"
+        },
+        {
+          "title": "Manual RevB · patchbay y rear panel (URL histórica, texto indexado)",
+          "url": "https://api.moogmusic.com/sites/default/files/2024-05/Spectravox_Manual_RevB.pdf"
+        },
+        {
+          "title": "Página del fabricante",
+          "url": "https://www.moogmusic.com/synthesizers/spectravox/"
+        }
+      ],
+      "note": ""
+    },
+    "livetrak": {
+      "name": "Zoom LiveTrak L6max",
+      "fill": "#404043",
+      "ink": "#e3e2da",
+      "defaultFace": "top",
+      "faces": {
+        "top": {
+          "width": 1000,
+          "height": 380,
+          "label": "Superior · conexiones",
+          "note": "",
+          "background": "livetrak",
+          "asset": "livetrak-top-panel"
+        },
+        "rear": {
+          "width": 1000,
+          "height": 140,
+          "label": "Trasera",
+          "note": "Sin conexiones de señal traseras: audio/MIDI/USB arriba; microSD y alimentación en el lateral derecho.",
+          "asset": "livetrak-rear-panel"
+        },
+        "right": {
+          "width": 620,
+          "height": 180,
+          "label": "Lateral derecho",
+          "note": "",
+          "asset": "livetrak-right-panel"
+        }
+      },
+      "connectors": [
+        {
+          "id": "input-1",
+          "label": "INPUT 1",
+          "face": "top",
+          "x": 48,
+          "y": 62,
+          "kind": "combo",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Combo XLR / 6,35 mm · mic/line"
+        },
+        {
+          "id": "input-3",
+          "label": "INPUT 3",
+          "face": "top",
+          "x": 192,
+          "y": 62,
+          "kind": "combo",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Combo XLR / 6,35 mm · mic/line"
+        },
+        {
+          "id": "input-2",
+          "label": "INPUT 2",
+          "face": "top",
+          "x": 120,
+          "y": 135,
+          "kind": "combo",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Combo XLR / 6,35 mm · mic/line"
+        },
+        {
+          "id": "input-4",
+          "label": "INPUT 4",
+          "face": "top",
+          "x": 264,
+          "y": 135,
+          "kind": "combo",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Combo XLR / 6,35 mm · mic/line"
+        },
+        {
+          "id": "input-5-l",
+          "label": "5 L",
+          "face": "top",
+          "x": 346,
+          "y": 48,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Canal estéreo 5 · 6,35 mm TS · pareja estéreo"
+        },
+        {
+          "id": "input-5-r",
+          "label": "5 R",
+          "face": "top",
+          "x": 346,
+          "y": 108,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Canal estéreo 5 · 6,35 mm TS · pareja estéreo"
+        },
+        {
+          "id": "input-6-l",
+          "label": "6 L",
+          "face": "top",
+          "x": 412,
+          "y": 48,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Canal estéreo 6 · 6,35 mm TS · pareja estéreo"
+        },
+        {
+          "id": "input-6-r",
+          "label": "6 R",
+          "face": "top",
+          "x": 412,
+          "y": 108,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Canal estéreo 6 · 6,35 mm TS · pareja estéreo"
+        },
+        {
+          "id": "input-7-l",
+          "label": "7 L/MONO",
+          "face": "top",
+          "x": 478,
+          "y": 48,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Canal estéreo 7 · 6,35 mm TS"
+        },
+        {
+          "id": "input-7-r",
+          "label": "7 R",
+          "face": "top",
+          "x": 478,
+          "y": 108,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Canal estéreo 7 · 6,35 mm TS"
+        },
+        {
+          "id": "input-8-l",
+          "label": "8 L/MONO",
+          "face": "top",
+          "x": 544,
+          "y": 48,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Canal estéreo 8 · 6,35 mm TS"
+        },
+        {
+          "id": "input-8-r",
+          "label": "8 R",
+          "face": "top",
+          "x": 544,
+          "y": 108,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "input",
+          "detail": "Canal estéreo 8 · 6,35 mm TS"
+        },
+        {
+          "id": "midi-in",
+          "label": "MIDI IN",
+          "face": "top",
+          "x": 675,
+          "y": 35,
+          "kind": "jack-35",
+          "signal": "midi",
+          "direction": "input",
+          "detail": "MIDI TRS 3,5 mm tipo A"
+        },
+        {
+          "id": "midi-out",
+          "label": "MIDI OUT",
+          "face": "top",
+          "x": 675,
+          "y": 76,
+          "kind": "jack-35",
+          "signal": "midi",
+          "direction": "output",
+          "detail": "MIDI TRS 3,5 mm tipo A"
+        },
+        {
+          "id": "usb",
+          "label": "USB",
+          "face": "top",
+          "x": 675,
+          "y": 111,
+          "kind": "usb-c",
+          "signal": "usb",
+          "direction": "duplex",
+          "detail": "USB audio/MIDI device · bus power",
+          "usbRole": "device"
+        },
+        {
+          "id": "aux-1",
+          "label": "AUX SEND 1",
+          "face": "top",
+          "x": 737,
+          "y": 48,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "6,35 mm TRS · salida balanceada"
+        },
+        {
+          "id": "aux-2",
+          "label": "AUX SEND 2",
+          "face": "top",
+          "x": 737,
+          "y": 108,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "6,35 mm TRS · salida balanceada"
+        },
+        {
+          "id": "master-l",
+          "label": "MASTER L",
+          "face": "top",
+          "x": 807,
+          "y": 48,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "6,35 mm TRS · salida balanceada"
+        },
+        {
+          "id": "master-r",
+          "label": "MASTER R",
+          "face": "top",
+          "x": 807,
+          "y": 108,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "6,35 mm TRS · salida balanceada"
+        },
+        {
+          "id": "monitor",
+          "label": "MONITOR",
+          "face": "top",
+          "x": 877,
+          "y": 48,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "6,35 mm TRS · auriculares estéreo"
+        },
+        {
+          "id": "sub",
+          "label": "SUB OUT",
+          "face": "top",
+          "x": 947,
+          "y": 48,
+          "kind": "jack-635",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "6,35 mm TRS · auriculares estéreo"
+        },
+        {
+          "id": "microsd",
+          "label": "microSD",
+          "face": "right",
+          "x": 220,
+          "y": 108,
+          "kind": "slot",
+          "signal": "storage",
+          "direction": "none",
+          "detail": "Ranura microSDXC"
+        },
+        {
+          "id": "power",
+          "label": "DC 5V · solo alimentación",
+          "face": "right",
+          "x": 350,
+          "y": 108,
+          "kind": "usb-c",
+          "signal": "power",
+          "direction": "input",
+          "detail": "DC 5V · solo alimentación"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Manual L6max · partes y conexiones",
+          "url": "https://zoomcorp.com/manuals/l6max-en/"
+        }
+      ],
+      "note": ""
+    },
+    "bogen-gdu150": {
+      "name": "Bogen GDU150",
+      "fill": "#353639",
+      "ink": "#e3e2da",
+      "defaultFace": "rear",
+      "faces": {
+        "rear": {
+          "width": 420,
+          "height": 240,
+          "label": "Base · XLR",
+          "note": "Vista directa de los tres pines de salida, en el extremo del cuello flexible.",
+          "asset": "bogen-gdu150-rear-panel"
+        },
+        "top": {
+          "width": 700,
+          "height": 150,
+          "label": "Superior",
+          "note": "",
+          "asset": "bogen-gdu150"
+        }
+      },
+      "connectors": [
+        {
+          "id": "audio-out",
+          "label": "XLR OUTPUT",
+          "face": "rear",
+          "x": 210,
+          "y": 138,
+          "kind": "xlr-m",
+          "signal": "audio",
+          "direction": "output",
+          "detail": "XLR macho de 3 pines · micrófono dinámico balanceado"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Ficha técnica oficial · GDU150",
+          "url": "https://www.bogen.com/sites/default/files/2021-01/microphones_specsheet.pdf"
+        }
+      ],
+      "note": ""
+    },
+    "hapax": {
+      "name": "Squarp Hapax",
+      "fill": "#25272a",
+      "ink": "#e3e2da",
+      "defaultFace": "rear",
+      "faces": {
+        "rear": {
+          "width": 1000,
+          "height": 190,
+          "label": "Trasera",
+          "note": "",
+          "asset": "hapax-rear-panel"
+        }
+      },
+      "connectors": [
+        {
+          "id": "usb-host",
+          "label": "USB",
+          "face": "rear",
+          "x": 129,
+          "y": 141,
+          "kind": "usb-a",
+          "signal": "usb",
+          "direction": "duplex",
+          "detail": "USB MIDI host",
+          "usbRole": "host"
+        },
+        {
+          "id": "usb-device",
+          "label": "USB",
+          "face": "rear",
+          "x": 171,
+          "y": 138,
+          "kind": "usb-b",
+          "signal": "usb",
+          "direction": "duplex",
+          "detail": "USB MIDI device",
+          "usbRole": "device"
+        },
+        {
+          "id": "gate-4",
+          "label": "GATE 4",
+          "face": "rear",
+          "x": 346,
+          "y": 140,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": ""
+        },
+        {
+          "id": "cv-4",
+          "label": "CV 4",
+          "face": "rear",
+          "x": 470,
+          "y": 140,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": ""
+        },
+        {
+          "id": "gate-3",
+          "label": "GATE 3",
+          "face": "rear",
+          "x": 375,
+          "y": 140,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": ""
+        },
+        {
+          "id": "cv-3",
+          "label": "CV 3",
+          "face": "rear",
+          "x": 499,
+          "y": 140,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": ""
+        },
+        {
+          "id": "gate-2",
+          "label": "GATE 2",
+          "face": "rear",
+          "x": 404,
+          "y": 140,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": ""
+        },
+        {
+          "id": "cv-2",
+          "label": "CV 2",
+          "face": "rear",
+          "x": 528,
+          "y": 140,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": ""
+        },
+        {
+          "id": "gate-1",
+          "label": "GATE 1",
+          "face": "rear",
+          "x": 433,
+          "y": 140,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": ""
+        },
+        {
+          "id": "cv-1",
+          "label": "CV 1",
+          "face": "rear",
+          "x": 557,
+          "y": 140,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "output",
+          "detail": ""
+        },
+        {
+          "id": "cv-in-2",
+          "label": "CV IN 2",
+          "face": "rear",
+          "x": 594,
+          "y": 140,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": ""
+        },
+        {
+          "id": "cv-in-1",
+          "label": "CV IN 1",
+          "face": "rear",
+          "x": 624,
+          "y": 140,
+          "kind": "jack-35",
+          "signal": "cv",
+          "direction": "input",
+          "detail": ""
+        },
+        {
+          "id": "midi-d",
+          "label": "MIDI D",
+          "face": "rear",
+          "x": 664,
+          "y": 136,
+          "kind": "jack-35",
+          "signal": "midi",
+          "direction": "output",
+          "detail": "TRS tipo A"
+        },
+        {
+          "id": "midi-c",
+          "label": "MIDI C",
+          "face": "rear",
+          "x": 706,
+          "y": 128,
+          "kind": "din-5",
+          "signal": "midi",
+          "direction": "output",
+          "detail": "DIN 5"
+        },
+        {
+          "id": "midi-b",
+          "label": "MIDI B",
+          "face": "rear",
+          "x": 758,
+          "y": 128,
+          "kind": "din-5",
+          "signal": "midi",
+          "direction": "output",
+          "detail": "DIN 5"
+        },
+        {
+          "id": "midi-a",
+          "label": "MIDI A",
+          "face": "rear",
+          "x": 811,
+          "y": 128,
+          "kind": "din-5",
+          "signal": "midi",
+          "direction": "output",
+          "detail": "DIN 5"
+        },
+        {
+          "id": "midi-in-2",
+          "label": "MIDI IN B",
+          "face": "rear",
+          "x": 868,
+          "y": 136,
+          "kind": "jack-35",
+          "signal": "midi",
+          "direction": "input",
+          "detail": "TRS tipo A"
+        },
+        {
+          "id": "midi-in-1",
+          "label": "MIDI IN A",
+          "face": "rear",
+          "x": 910,
+          "y": 128,
+          "kind": "din-5",
+          "signal": "midi",
+          "direction": "input",
+          "detail": "DIN 5"
+        },
+        {
+          "id": "switch",
+          "label": "POWER",
+          "face": "rear",
+          "x": 56,
+          "y": 130,
+          "kind": "switch",
+          "signal": "mechanical",
+          "direction": "none",
+          "detail": ""
+        },
+        {
+          "id": "power",
+          "label": "15V DC",
+          "face": "rear",
+          "x": 89,
+          "y": 141,
+          "kind": "dc",
+          "signal": "power",
+          "direction": "input",
+          "detail": "15V DC"
+        },
+        {
+          "id": "sd",
+          "label": "SD",
+          "face": "rear",
+          "x": 233,
+          "y": 141,
+          "kind": "slot",
+          "signal": "storage",
+          "direction": "none",
+          "detail": ""
+        },
+        {
+          "id": "pedal",
+          "label": "PEDAL",
+          "face": "rear",
+          "x": 306,
+          "y": 140,
+          "kind": "jack-635",
+          "signal": "control",
+          "direction": "input",
+          "detail": "Pedal de sustain"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Manual y conectividad oficial",
+          "url": "https://squarp.net/hapax/"
+        },
+        {
+          "title": "Fotografía trasera oficial",
+          "url": "https://squarp.net/static/1785237772252.306630038613/06%20CONNECTIVITY.jpg"
+        }
+      ],
+      "note": ""
+    }
+  }
+}

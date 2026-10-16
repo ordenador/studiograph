@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { DeviceHardware } from './DeviceHardware';
 import { HARDWARE_ASPECT_RATIOS, HARDWARE_VISUALS, hardwareVisual, nodeHardwareId } from './hardwareVisuals';
+import { hardwarePanel } from './hardwarePanels';
 
 const assets = import.meta.glob('../../../public/hardware/*.svg', { query: '?raw', import: 'default', eager: true });
 
@@ -13,7 +14,7 @@ describe('hardware visual catalogue', () => {
       expect(html).toContain(`data-hardware-id="${id}"`);
       if (id === 'hapax') expect(html).toContain('<svg');
       else {
-        expect(html).toContain(`/hardware/${visual.asset}.svg`);
+        expect(html).toContain(`/hardware/${hardwarePanel(id)?.faces.top?.asset || visual.asset}.svg`);
         const entry = Object.entries(assets).find(([path]) => path.endsWith(`/${visual.asset}.svg`));
         expect(entry, `Missing SVG for ${id}`).toBeDefined();
         expect(entry?.[1]).toContain('<title');

@@ -5,6 +5,8 @@ import { parseStudioData } from '../../utils/studioExport';
 import { findConnectedInstruments } from '../../utils/hapaxExport';
 import type { Device, Setup, Track } from './repository';
 import { CONNECTORS, hapaxHandlePort } from './hardwareConnectors';
+import { bindExistingPorts, connectorForPort, hardwarePanel, panelFace, physicalPorts, physicalPortsCompatible } from './hardwarePanels';
+import { nodeHardwareId } from './hardwareVisuals';
 
 export interface CableWorkspace {
   version: 1;
@@ -80,7 +82,7 @@ const routeHandles = (port: string): string[] => /^[A-D]$/.test(port) ? [`midi-$
 
 export function equipmentPreset(device: Device): InstrumentPreset {
   return { id: `repo:${device.id}`, hardwareId: device.id, name: device.title, manufacturer: device.kind, type: 'POLY', isRemovable: true,
-    inputs: [], outputs: [], iconId: 'music' };
+    ...physicalPorts(device.id), iconId: 'music' };
 }
 
 export function seedWorkspace(setup: Setup, devices: Device[], definitions: Record<string, string>): CableWorkspace {
@@ -90,14 +92,27 @@ export function seedWorkspace(setup: Setup, devices: Device[], definitions: Reco
   setup.tracks.forEach((t, i) => {
     const id = `track-${t.number}-${t.device}`;
     const handles = routeHandles(t.port);
-    const inputs: Port[] = handles.length ? handles.map((h, n) => ({ id: `in-${n}`, label: h.startsWith('usb') ? h === 'usb-host' ? 'USB Device' : 'USB Host' : h.startsWith('midi') ? 'MIDI In' : h.startsWith('cv') ? 'CV In' : 'Gate In',
+    const legacyInputs: Port[] = handles.length ? handles.map((h, n) => ({ id: `in-${n}`, label: h.startsWith('usb') ? h === 'usb-host' ? 'USB Device' : 'USB Host' : h.startsWith('midi') ? 'MIDI In' : h.startsWith('cv') ? 'CV In' : 'Gate In',
       type: h.startsWith('usb') ? 'usb' : h.startsWith('midi') ? 'midi' : 'cv' })) : [{ id: 'in-0', label: 'MIDI In', type: 'midi' }];
+    const real = hardwarePanel(t.device) ? physicalPorts(t.device) : undefined;
+    const inputs = real?.inputs || legacyInputs;
+    const targets = handles.map((h, n) => {
+      if (!real) return legacyInputs[n];
+      const source = HAPAX_PRESET.outputs.find(p => p.id === h);
+      if (!source) return undefined;
+      const candidates = inputs.filter(p => physicalPortsCompatible('hapax', source, t.device, p));
+      if (h.startsWith('cv')) return candidates.find(p => p.connectorId === 'pitch');
+      if (h.startsWith('gate')) return candidates.find(p => ['contour-gate', 'trigger'].includes(p.connectorId || ''));
+      return candidates.length === 1 ? candidates[0] : undefined;
+    });
+    const unresolved = handles.filter((_, n) => !targets[n]);
     nodes.push({ id, type: 'instrument', position: { x: (i % 3) * 350, y: 340 + Math.floor(i / 3) * 250 }, data: {
       name: t.name, hardwareId: t.device, manufacturer: devices.find(d => d.id === t.device)?.title || t.device, channel: t.channel || 1,
-      type: 'POLY', inputs, outputs: [], ccMap: [], nrpnMap: [], assignCCs: [], automationLanes: [],
+      type: 'POLY', inputs, outputs: real?.outputs || [], ccMap: [], nrpnMap: [], assignCCs: [], automationLanes: [],
+      ...(unresolved.length ? { hardwareRouteWarning: `Ruta ${t.port} sin entrada física inequívoca. Selecciona el conector en el cableado.` } : {}),
       ...definitionData(definitions[t.definition] || ''), isRemovable: true, showCVPorts: true, trackNumber: t.number } });
-    handles.forEach((h, n) => edges.push({ id: `${id}:${h}`, source: 'hapax', sourceHandle: h, target: id, targetHandle: `in-${n}`,
-      type: 'custom', data: { portType: inputs[n].type } }));
+    handles.forEach((h, n) => { const target = targets[n]; if (target) edges.push({ id: `${id}:${h}`, source: 'hapax', sourceHandle: h, target: id, targetHandle: target.id,
+      type: 'custom', data: { portType: target.type } }); });
   });
   return autoArrangeWorkspace({ version: 1, nodes, edges, customPresets: [], sourceTracks: trackSignature(setup.tracks) });
 }
@@ -111,8 +126,22 @@ export function autoArrangeWorkspace(workspace: CableWorkspace): CableWorkspace 
   };
   const instruments = workspace.nodes.filter(n => !n.data.isHapax).sort((a, b) => instrumentPort(a.id) - instrumentPort(b.id));
   const columns = Math.min(3, Math.max(1, instruments.length));
-  const cellWidth = Math.max(330, ...instruments.map(n => n.data.width || Math.max(260, Math.max(n.data.inputs.length, n.data.outputs.length) * 88 + 40))) + 40;
-  const rowHeight = 300;
+  const sizes = instruments.map(n => {
+    const panel = hardwarePanel(nodeHardwareId(n.id, n.data));
+    if (!panel) return { width: n.data.width || Math.max(260, Math.max(n.data.inputs.length, n.data.outputs.length) * 88 + 40), height: 250 };
+    const width = Math.max(620, n.data.width || 800);
+    const side = panelFace(panel, n.data.hardwareView);
+    const face = panel.faces[side]!;
+    const columns = Math.max(1, Math.floor((width - 24) / 113));
+    const ports = bindExistingPorts(nodeHardwareId(n.id, n.data), n.data);
+    const rails = (['input', 'output'] as const).map(direction => {
+      const count = ports[direction === 'input' ? 'inputs' : 'outputs'].filter(p => connectorForPort(panel, p, direction)?.face !== side).length;
+      return count ? Math.ceil(count / columns) * 58 + 28 : 0;
+    });
+    return { width, height: width * face.height / face.width + 60 + (face.note || n.data.hardwareRouteWarning ? 80 : 0) + rails[0] + rails[1] };
+  });
+  const cellWidth = Math.max(330, ...sizes.map(s => s.width)) + 40;
+  const rowHeight = Math.max(300, ...sizes.map(s => s.height + 40));
   const panelWidth = Math.max(1000, ...workspace.nodes.filter(n => n.data.isHapax).map(n => n.data.width || 1000));
   const span = Math.max(panelWidth, cellWidth * columns - 40);
   const positions = new Map(instruments.map((n, i) => {
