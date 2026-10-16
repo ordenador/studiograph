@@ -16,7 +16,7 @@ export function HapaxRearNode({ id, data }: NodeProps<Node<InstrumentNodeData>>)
   useEffect(() => { internals(id); }, [internals, id, width, data.showCVPorts]);
   const visible = (port: Port) => port.type !== 'cv' || data.showCVPorts;
   const activePorts = edges.filter(e => e.source === id).map(e => hapaxHandlePort(e.sourceHandle || ''));
-  const inputX: Record<string, number> = { 'midi-in-1': 909, 'midi-in-2': 859, 'cv-in-1': 601, 'cv-in-2': 569 };
+  const inputX = Object.fromEntries(CONNECTORS.filter(c => c.input).map(c => [c.input!, c.x]));
   const handle = (port: Port, direction: 'source' | 'target') => {
     const x = direction === 'source' ? CONNECTORS.find(c => c.port === hapaxHandlePort(port.id))?.x : inputX[port.id];
     if (x === undefined || !visible(port)) return null;

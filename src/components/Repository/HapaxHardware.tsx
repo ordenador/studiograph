@@ -45,19 +45,19 @@ function connectorColor(port: string | undefined): string {
 function ConnectorShape({ kind, color }: { kind: Connector['kind']; color: string }) {
   if (kind === 'din') {
     return <>
-      <circle r="18" fill="#0c0c0e" stroke={color} strokeWidth="2" />
-      <path d="M-10 10 A14 14 0 1 1 10 10" fill="none" stroke="#707078" />
-      {[[-10, 2], [-7, -6], [0, -9], [7, -6], [10, 2]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="2" fill="#a1a1aa" />)}
-      <rect x="-3" y="9" width="6" height="4" fill="#707078" />
+      <circle r="22" fill="#09090b" stroke={color} strokeWidth="2" />
+      <circle r="17" fill="#18181b" stroke="#3f3f46" />
+      {[[-13, 1], [-9, 10], [0, 13], [9, 10], [13, 1]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="2.3" fill="#030304" stroke="#52525b" strokeWidth="0.6" />)}
+      <rect x="-2" y="18" width="4" height="4" fill="#3f3f46" />
     </>;
   }
   if (kind === 'trs') {
-    return <><circle r="8" fill="#0c0c0e" stroke={color} strokeWidth="2" /><circle r="4" fill="#27272a" /></>;
+    return <><circle r="7" fill="#b4b4b8" stroke={color} strokeWidth="1.5" /><circle r="4.3" fill="#09090b" /></>;
   }
   if (kind === 'usb-a') {
-    return <><rect x="-16" y="-9" width="32" height="18" fill="#0c0c0e" stroke={color} strokeWidth="2" /><rect x="-10" y="-1" width="20" height="4" fill="#71717a" /></>;
+    return <><rect x="-18" y="-10" width="36" height="20" rx="1" fill="#b4b4b8" stroke={color} strokeWidth="1.5" /><rect x="-15" y="-7" width="30" height="14" fill="#09090b" /><rect x="-13" y="3" width="26" height="4" fill="#a1a1aa" />{[-9, -3, 3, 9].map(x => <rect key={x} x={x} y="3" width="2" height="3" fill="#52525b" />)}</>;
   }
-  return <><path d="M-11 11 V-5 L-5-11 H5 L11-5 V11 Z" fill="#0c0c0e" stroke={color} strokeWidth="2" /><rect x="-5" y="-5" width="10" height="10" fill="#71717a" /></>;
+  return <><rect x="-15" y="-14" width="30" height="28" fill="#b4b4b8" stroke={color} strokeWidth="1.5" /><path d="M-11 10V-5L-6-10H6L11-5V10Z" fill="#09090b" /><rect x="-6" y="-4" width="12" height="11" fill="#71717a" /></>;
 }
 
 /** Original vector reference of Hapax. Active means configured in the setup, not live MIDI. */
@@ -161,20 +161,16 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
       <title id={titleId}>Hapax · panel trasero, mirando los conectores</title>
       <desc id={descriptionId}>Referencia del panel trasero. {patchbay ? 'Las salidas del diseño tienen color. Los puntos inferiores permiten dibujar cables y los superiores recibir retornos.' : 'Las salidas configuradas se distinguen por un borde de color y una marca.'} {onPortClick ? 'Activa una salida con clic, Enter o espacio para seleccionarla en el editor.' : 'Las entradas, alimentación, SD y pedal se muestran como referencia.'} No indica conexión física ni actividad MIDI.</desc>
       <text x="24" y="27" fill="#e4e4e7" fontSize="15">Panel trasero · mirando los conectores</text>
-      <rect x="18" y="64" width="946" height="106" rx="4" fill="#27272a" stroke="#71717a" />
-      {[[34, 75], [948, 75], [34, 158], [948, 158]].map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="2" fill="#09090b" />)}
-      <circle cx="40" cy="107" r="10" fill="#111113" stroke="#71717a" />
-      <path d="M40 101v7 M36 104a6 6 0 1 0 8 0" fill="none" stroke="#a1a1aa" />
-      <rect x="61" y="96" width="22" height="22" fill="#111113" />
-      <circle cx="72" cy="107" r="7" fill="#09090b" stroke="#71717a" /><circle cx="72" cy="107" r="2" fill="#a1a1aa" />
-      <text x="56" y="149" textAnchor="middle" fill="#d4d4d8" fontSize="11">Power</text>
-      <rect x="180" y="101" width="40" height="7" fill="#09090b" stroke="#71717a" />
-      <text x="200" y="149" textAnchor="middle" fill="#d4d4d8" fontSize="11">SD</text>
-      <circle cx="244" cy="107" r="10" fill="#09090b" stroke="#71717a" /><circle cx="244" cy="107" r="6" fill="#27272a" />
-      <text x="244" y="149" textAnchor="middle" fill="#d4d4d8" fontSize="11">Switch</text>
-      {[{ x: 125, text: 'USB ↔' }, { x: 337, text: 'Gate out' }, { x: 477, text: 'CV out' }, { x: 585, text: 'CV in' }, { x: 724, text: 'MIDI out' }, { x: 884, text: 'MIDI in' }].map(({ x, text }) => <text key={text} x={x} y="86" textAnchor="middle" fill="#d4d4d8" fontSize="11">{text}</text>)}
+      <rect x="18" y="64" width="946" height="112" rx="4" fill="#27272a" stroke="#71717a" />
+      <g aria-label="Interruptor de alimentación"><title>Interruptor de alimentación</title><circle cx="56" cy="140" r="12" fill="#111113" stroke="#3f3f46" strokeWidth="2" /><circle cx="56" cy="140" r="8" fill="#1c1c1f" /></g>
+      <g aria-label="Alimentación 15 V DC"><title>Alimentación 15 V DC</title><rect x="77" y="125" width="24" height="28" fill="#111113" stroke="#3f3f46" /><circle cx="89" cy="138" r="8" fill="#09090b" /><circle cx="89" cy="138" r="2" fill="#a1a1aa" /></g>
+      <text x="89" y="105" textAnchor="middle" fill="#d4d4d8" fontSize="9">15 V DC</text>
+      <g aria-label="Ranura SD"><title>Ranura SD</title><rect x="197" y="143" width="72" height="12" fill="#111113" /><rect x="200" y="146" width="66" height="6" fill="#09090b" stroke="#a1a1aa" /></g>
+      <g aria-label="Switch · pedal de 6,35 mm"><title>Switch · pedal de 6,35 mm</title><circle cx="306" cy="132" r="12" fill="#09090b" stroke="#52525b" strokeWidth="2" /><circle cx="306" cy="132" r="8" fill="#111113" /></g>
+      {[{ x: 72, text: 'Power' }, { x: 150, text: 'USB ↔' }, { x: 233, text: 'SD card' }, { x: 306, text: 'Switch' }, { x: 389, text: 'Gate out' }, { x: 514, text: 'CV out' }, { x: 609, text: 'CV in' }, { x: 748, text: 'MIDI out' }, { x: 889, text: 'MIDI in' }].map(({ x, text }) => <text key={text} x={x} y="85" textAnchor="middle" fill="#d4d4d8" fontSize="11">{text}</text>)}
+      <path d="M335 91H445 M459 91H569 M583 91H635 M653 91H835 M856 91H936" stroke="#71717a" />
       {patchbay && <g aria-hidden="true">
-        {CONNECTORS.filter(c => c.port).map(c => <path key={c.name} d={`M${c.x} 155V190`} stroke={portActive(c.port, activePorts) ? connectorColor(c.port) : '#52525b'} strokeWidth="2" />)}
+        {CONNECTORS.filter(c => c.port).map(c => <path key={c.name} d={`M${c.x} ${c.y + (c.kind === 'din' ? 24 : 17)}V190`} stroke={portActive(c.port, activePorts) ? connectorColor(c.port) : '#52525b'} strokeWidth="2" />)}
         {patchInputs.map(x => <path key={x} d={`M${x} 0V63`} stroke="#52525b" strokeWidth="1" />)}
       </g>}
       {CONNECTORS.map((connector) => {
@@ -182,9 +178,10 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
         const focused = focusedPort === connector.port || portActive(connector.port, [selectedPort]);
         const interactive = !!connector.port && !!onPortClick;
         const color = active ? connectorColor(connector.port) : '#a1a1aa';
+        const hitHalfWidth = connector.kind === 'trs' ? 12 : connector.kind === 'din' ? 24 : 20;
         return <g
           key={connector.name}
-          transform={`translate(${connector.x} 111)`}
+          transform={`translate(${connector.x} ${connector.y})`}
           role={interactive ? 'button' : undefined}
           tabIndex={interactive ? 0 : undefined}
           aria-label={`${connector.name}${active ? patchbay ? ' · conectado en el diseño' : ' · configurado en el setup' : ''}`}
@@ -201,13 +198,12 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
           style={{ cursor: interactive ? 'pointer' : 'default', outline: 'none' }}
         >
           <title>{`${connector.name}${active ? ' · configurado' : ''}`}</title>
-          <rect x={connector.kind === 'trs' ? -15 : -20} y="-21" width={connector.kind === 'trs' ? 30 : 40} height="65" rx="2" fill="transparent" stroke={focused ? '#fafafa' : 'transparent'} strokeWidth="2" />
+          <rect x={-hitHalfWidth} y={96 - connector.y} width={hitHalfWidth * 2} height="77" rx="2" fill="transparent" stroke={focused ? '#fafafa' : 'transparent'} strokeWidth="2" />
           <ConnectorShape kind={connector.kind} color={color} />
-          <text y="38" textAnchor="middle" fill="#f4f4f5" fontSize="11">{connector.label}</text>
-          {active && <path d="M-7 44H7" stroke={color} strokeWidth="3" />}
+          <text y={105 - connector.y} textAnchor="middle" fill="#f4f4f5" fontSize="10">{connector.label}</text>
+          {active && <path d="M-7 27H7" stroke={color} strokeWidth="3" />}
         </g>;
       })}
-      <path d="M278 158H396 M418 158H536 M558 158H612 M633 158H819 M845 158H929" stroke="#71717a" />
       {routes.map((route, index) => {
         const row = Math.floor(index / 5);
         const count = Math.min(5, routes.length - row * 5);
@@ -217,8 +213,8 @@ export function HapaxHardware({ view = 'rear', activePorts = [], onPortClick, co
         return <g key={`${route.port}:${route.device}`} role="img" aria-label={`${route.title} · ${route.label}`}>
           <title>{`${route.title} · ${route.label} · pistas ${route.tracks.map(t => t.number).join(', ')}`}</title>
           {route.sources.map(source => <g key={source}>
-            <circle cx={source} cy="173" r="3" fill={color} />
-            <path data-route={route.port} d={`M${source} 173 C${source} ${210 + row * 20},${x} ${y - 40},${x} ${y}`} fill="none" stroke={color} strokeWidth="2" />
+            <circle cx={source} cy="179" r="3" fill={color} />
+            <path data-route={route.port} d={`M${source} 179 C${source} ${210 + row * 20},${x} ${y - 40},${x} ${y}`} fill="none" stroke={color} strokeWidth="2" />
           </g>)}
           <foreignObject x={x - 86} y={y} width="172" height="86">
             <div style={{ padding: 10, background: '#18181b', border: `1px solid ${color}`, borderRadius: 4, color: '#f4f4f5', fontSize: 12, lineHeight: 1.4 }}>

@@ -2,6 +2,12 @@
   "publisher": "Squarp Instruments",
   "page": "https://squarp.net/hapax/",
   "context": "Official Step-mode screen examples, used as static hardware references. They do not represent the current setup or a connected device.",
+  "rear_panel": {
+    "source": "https://squarp.net/static/1785237772252.306630038613/06%20CONNECTIVITY.jpg",
+    "cross_check": "https://squarp.net/static/1785237772330.308330038624/PACKSHOT%20WHITE%20BACK.jpg",
+    "geometry": "Connector centers and rear chassis proportions normalized from the straight rear packshot. The SD slot sits below the USB and mini-jack axes; the DIN sockets sit higher. Labels remain upright for use as a routing reference.",
+    "direction": "Viewed directly from the rear: power at left, MIDI inputs at right. Outputs and input cable handles use the same connector positions."
+  },
   "pads": {
     "mapping": "The grey viewport in step-piano-roll.jpg spans x=0..1023 and y=328..455. Divide into 16 columns of 64 pixels and 8 rows of 16 pixels. Only the five note starts within this viewport are lit; note lengths are represented on the screen.",
     "note_starts_row_column_zero_based": [[3, 7], [4, 3], [5, 13], [6, 1], [6, 6]],
