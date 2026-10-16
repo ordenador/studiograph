@@ -1,0 +1,26 @@
+{
+  "publisher": "Squarp Instruments",
+  "page": "https://squarp.net/hapax/",
+  "context": "Official Step-mode screen examples, used as static hardware references. They do not represent the current setup or a connected device.",
+  "pads": {
+    "mapping": "The grey viewport in step-piano-roll.jpg spans x=0..1023 and y=328..455. Divide into 16 columns of 64 pixels and 8 rows of 16 pixels. Only the five note starts within this viewport are lit; note lengths are represented on the screen.",
+    "note_starts_row_column_zero_based": [[3, 7], [4, 3], [5, 13], [6, 1], [6, 6]],
+    "color_source": "https://squarp.net/static/6baeaec62456db0ab69f28ead78e6a21/e3584/pads%20-%20mode%20step.png",
+    "color_note": "Row colors follow the official Step matrix illustration, not the monochrome piano roll. Device RGB colors can be customized.",
+    "manual": "https://squarp.net/hapax/manual/modestep/"
+  },
+  "files": [
+    {
+      "file": "step-parameters.jpg",
+      "source": "https://squarp.net/static/233520ecbd87dd514fc28b52535462b1/e640c/step%20mode%20params.jpg",
+      "description": "Left display: note parameters in Step mode.",
+      "sha256": "cecd7ef18a3ebd929a36fa6a23858b0d06fae96d5d0216d3542d47e0bcbec48c"
+    },
+    {
+      "file": "step-piano-roll.jpg",
+      "source": "https://squarp.net/static/872e97330ee6d8654792d63090cbe761/e640c/piano%20roll%20simple.jpg",
+      "description": "Right display: piano roll in Step mode.",
+      "sha256": "bac8a66ca658c21f0e97af229ff94a559be668d3fcfaf85ec62798b59f11cda4"
+    }
+  ]
+}

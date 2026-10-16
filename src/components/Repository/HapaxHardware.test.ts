@@ -29,13 +29,14 @@ describe('Hapax hardware reference', () => {
     expect(svg).toContain('No indica conexión física ni actividad MIDI');
   });
 
-  it('keeps the top view neutral and noninteractive despite configured routes', () => {
+  it('keeps the top view a static noninteractive reference despite configured routes', () => {
     const svg = renderToStaticMarkup(createElement(HapaxHardware, {
       view: 'top', activePorts: ['A'], onPortClick: () => {},
     }));
     expect(svg).not.toContain('role="button"');
     expect(svg).not.toContain('data-port=');
-    expect(svg).toContain('Sin notas ni actividad de reproducción representadas');
+    expect(svg).toContain('Capturas estáticas oficiales del modo Step');
+    expect(svg).toContain('Las capturas no representan el proyecto abierto ni actividad MIDI en vivo');
     expect(svg).toContain('Pantalla de parámetros');
     expect(svg).toContain('Pantalla de menú');
   });
